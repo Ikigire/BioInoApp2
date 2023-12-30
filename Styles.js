@@ -74,17 +74,15 @@ module.exports = StyleSheet.create({
         shadowColor: '#cfcfcf'
     },
     card: {
-        width: '80%',
-        marginRight: 40,
-        marginLeft: 40,
+        width: '95%',
+        marginHorizontal: 10,
         marginTop: 10,
-        paddingTop: 20,
-        paddingBottom: 20,
+        paddingVertical: 10,
         backgroundColor: '#1D6FB8',
-        borderRadius: 10,
-        borderWidth: 1,
+        borderRadius: 25,
+        borderWidth: 3,
         color: '#fff',
-        borderColor: '#fff',
+        borderColor: '#1D6FB8',
 
         alignItems: 'center'
     },
@@ -92,7 +90,8 @@ module.exports = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         textAlignVertical: 'center',
-        fontSize: 26
+        fontSize: 26,
+        marginVertical: 6
     },
     card_text: {
         color: '#fff'

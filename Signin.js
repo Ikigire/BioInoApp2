@@ -31,13 +31,13 @@ class Signin extends Component {
     }
 
     const url = `${baseUrl}/usuarios?fields=email`;
-    console.log(url);
+    // console.log(url);
 
     fetch(url)
       .then(resp => resp.json())
       .catch(error => console.log(error))
       .then(users => {
-        console.log(users);
+        // console.log(users);
         let type = "success";
         let message = "Correo disponible";
         users.forEach(user => {
@@ -99,7 +99,7 @@ class Signin extends Component {
       email: this.state.email,
       password: this.state.password
     };
-    console.log(newUser);
+    // console.log(newUser);
 
     const url = `${baseUrl}/usuarios`;
     fetch(url, {

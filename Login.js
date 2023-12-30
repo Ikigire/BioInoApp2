@@ -76,7 +76,7 @@ class Login extends Component {
         }
 
         const url = `${baseUrl}/usuarios/login`;
-        console.log(url);
+        // console.log(url);
         fetch(url, {
             method: 'post',
             headers: {
@@ -95,7 +95,7 @@ class Login extends Component {
 
                 await AsyncStorage.setItem(usuarioItemKey, JSON.stringify(data));
 
-                console.info("Usuario: ", await AsyncStorage.getItem("usuario"));
+                // console.info("Usuario: ", await AsyncStorage.getItem("usuario"));
 
                 this.props.navigation.navigate("Root");
             })

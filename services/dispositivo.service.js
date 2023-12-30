@@ -8,7 +8,12 @@ export function getDispositivoById(idDispositivo) {
 }
 
 export function getDispositivosByEstablecimientoUsuario(establecimiento, idUsuario) {
-    const url = `${dispUrl}/${establecimiento}/${idUsuario}`;
+    const url = `${dispUrl}/estab/${establecimiento}/${idUsuario}`;
+    return fetch(url);
+}
+
+export function getDispositivosUsuario(idUsuario) {
+    const url = `${dispUrl}/usuario/${idUsuario}`;
     return fetch(url);
 }
 

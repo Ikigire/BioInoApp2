@@ -81,7 +81,6 @@ export default function App() {
           />
           <Stack.Screen
             name='Root'
-            listeners={(obj) => { console.log(obj) }}
             component={MyTabs}
             options={({ navigation }) => ({
               headerTitle: (props) => <LogoTitle {...props} />,
