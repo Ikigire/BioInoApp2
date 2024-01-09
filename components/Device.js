@@ -21,13 +21,11 @@ const Device = ({ device }) => {
             <Text style={s.card_title}> {device.nombreDispositivo} </Text>
             <View style={{display: 'flex', width: '100%', marginBottom:8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
                 <MaterialCommunityIcons name={icon} size={40} color={'#fff'} />
-                {/* <Image source={require('./assets/iot_512.png')} style={{ width: 125, height: 120, resizeMode: 'contain', backgroundColor: '#fff' }} /> */}
                 <View>
                     <Text style={[s.card_text, {textAlign: 'center'}]}> Ubicación: </Text>
                     <Text style={[s.card_text, {textAlign: 'center'}]}> {`${device.establecimiento} - ${device.grupo}`} </Text>
                     <Text style={[s.card_text, {textAlign: 'center'}]}> Modelo: </Text>
                     <Text style={[s.card_text, {textAlign: 'center'}]}> {device.modelo} </Text>
-                    {/* <Text style={[s.card_text, {textAlign: 'center'}]}>  {device.idDispositivo} </Text> */}
                 </View>
             </View>
             <SensorInfo mac={device.idDispositivo} />

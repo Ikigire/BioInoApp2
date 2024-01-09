@@ -66,35 +66,6 @@ function Realtime({ navigation }) {
             />
             <FlashMessage ref={ref => this.flashMessage = ref} position={'top'} />
         </View>
-        // <ScrollView>
-
-        //     <View style={s.container}>
-
-        //         <Device
-        //             navigation={navigation}
-        //             ubicacion={'Oficina'}
-        //             nombre={'Oficina - device'}
-        //             modelo={'123plasd'}
-        //             mac={"142800F7C630"}
-        //             />
-        //         <Device
-        //             navigation={navigation}
-        //             ubicacion={'Habitación'}
-        //             nombre={'El Dormilón'}
-        //             modelo={'Imac74'}
-        //             mac={"78C8BF519140"}
-        //             />
-        //         <Device
-        //             navigation={navigation}
-        //             ubicacion={'Sala'}
-        //             nombre={'El Relajado'}
-        //             modelo={'abcdaedasd'}
-        //             mac={"201804F7C630"}
-        //             />
-
-        //     </View>
-
-        // </ScrollView>
     );
 }
 

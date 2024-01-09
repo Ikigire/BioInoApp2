@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { getDispositivoSensoresInfo } from '../services/mqtt.service'
+import HumidityInfo from './HumidityInfo'
 
 const statusValues = {
     conectando: 'Conectando...',
@@ -107,6 +108,7 @@ const SensorInfo = ({ mac }) => {
     });
     const [reconectar, setReconectar] = useState(false);
     const [showValuesDetail, setShowValuesDetail] = useState(false);
+    const [intervalId, setintervalId] = useState(null);
     // const [] = useState();
 
     const toggleShowValuesDetail = () => {
@@ -150,11 +152,16 @@ const SensorInfo = ({ mac }) => {
     }, [reconectar])
 
     useEffect(() => {
-        if (connectionStatus == statusValues.conectado)
-            setTimeout(() => {
+        // if (connectionStatus == statusValues.conectado)
+        //     setTimeout(() => {
+        //         getDeviceData();
+        //     }, 500);
+        setInterval(() => {
+            if (connectionStatus == statusValues.conectado)
                 getDeviceData();
-            }, 500);
-    }, [deviceSensor])
+        }, 2000);
+    }, [connectionStatus])
+
     return (
         <>
             <Pressable style={[estilo.container(connectionStatus)]}
@@ -177,11 +184,21 @@ const SensorInfo = ({ mac }) => {
                         <Text style={estilo.sensorStatus}>{connectionStatus}</Text>
                 }
             </Pressable>
+            <View>
+                <View style={[estilo.container(statusValues.conectado), { marginTop: 8, justifyContent: 'space-between' }]}>
+                    <Text>Ver Detalle sensor de temperatura </Text>
+                    <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
+                </View>
+                <HumidityInfo />
+            </View>
+            <View style={[estilo.container(statusValues.conectado), { marginTop: 8, justifyContent: 'space-between' }]}>
+                <Text>Ver Detalle sensor de humedad </Text>
+                <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
+            </View>
             {
                 showValuesDetail ? (
-                    <View style={[estilo.container(connectionStatus), { marginTop: 8 }]}>
-                        <Text>More Info</Text>
-                    </View>
+                    <>
+                    </>
                 ) :
                     (
                         <></>
