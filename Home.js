@@ -7,7 +7,7 @@ import FlashMessage from "react-native-flash-message";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Dropdown } from "react-native-element-dropdown";
 import { useAppContext } from "./App";
-import { getDispositivosByEstablecimientoUsuario } from "./services/dispositivo.service";
+import { getDispositivosByEstablecimientoUsuario, getDispositivosUsuario } from "./services/dispositivo.service";
 import SmallDeviceView from "./components/SmallDeviceView";
 
 
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 
 function Home({ navigation }) {
     const [establecimientos, setEstablecimientos] = useState([]);
-    const [loadingDevices, setLoadingDevices] = useState(false);
+    const [loadingDevices, setLoadingDevices] = useState(true);
     const [selectedEstab, setSelectedEstab] = useState("");
     const [dispositivos, setDispositivos] = useState([]);
 
@@ -129,7 +129,7 @@ function Home({ navigation }) {
             let added = false;
 
             sections.forEach(section => {
-                if (section.title == device.grupo) {
+                if (section.title == device.establecimiento) {
                     added = true;
                     section.data = [...section.data, device];
                 }
@@ -137,13 +137,38 @@ function Home({ navigation }) {
 
             if (!added) {
                 sections.push({
-                    title: device.grupo,
+                    title: device.establecimiento,
                     data: [device]
                 });
             }
         });
 
+        console.log(sections);
         return sections;
+    }
+
+    const getDispositivosByUserId = (id) => {
+        getDispositivosUsuario(id)
+            .then(async resp => {
+                setLoadingDevices(false)
+
+                if (resp.status != 200 && resp.status != 404) {
+                    const error = await resp.json();
+                    // console.log()
+                    throw new Error(error.message ?? '');
+                }
+                const devices = await resp.json();
+                console.log(devices);
+                setDispositivos(devices);
+            })
+            .catch(error => {
+                this.flashMessage.showMessage({
+                    message: error.message,
+                    type: 'danger',
+                    icon: 'danger',
+                    duration: 4000
+                })
+            });
     }
 
     useEffect(() => {
@@ -152,7 +177,7 @@ function Home({ navigation }) {
                 // console.warn("Datos usuario", value)
                 const { idUsuario: id } = JSON.parse(value);
                 setIdUsuario(id);
-                getEstablecimientosData(id);
+                getDispositivosByUserId(id);
             })
             .catch(error => {
                 console.log(error);
@@ -167,57 +192,90 @@ function Home({ navigation }) {
 
     useEffect(() => {
         if (updateEstList) {
-            getEstablecimientosData(idUsuario);
+            getDispositivosByUserId(idUsuario);
             setUpdateEstList(false);
-            if (selectedEstab) {
-                setLoadingDevices(true);
-                getDispositivosByEstab(selectedEstab);
-            }
         }
     }, [updateEstList]);
 
     // useEffect(() => updateData());
 
-    useEffect(() => {
-        if (selectedEstab) {
-            setLoadingDevices(true);
-            getDispositivosByEstab(selectedEstab);
-        }
-    }, [selectedEstab])
+    // useEffect(() => {
+    //     if (selectedEstab) {
+    //         setLoadingDevices(true);
+    //         getDispositivosByEstab(selectedEstab);
+    //     }
+    // }, [selectedEstab])
 
     return (
         <>
             {
+                loadingDevices ?
+                    (
+                        <ActivityIndicator size={'large'} />
+                    ) :
+                    (
+                        dispositivos.length > 0 ?
+                            (
+                                <View style={{ flex: 1 }}>
+                                    <View style={{ width: '100%', padding: 12, backgroundColor: '#1D6FB8', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                        {/* <Text style={{ color: '#fff', fontSize: 18 }}>Establecimiento: </Text> */}
+                                        {/* <Dropdown
+                                            mode="modal"
+                                            data={establecimientos}
+                                            style={[styles.dropdown, { minWidth: '75%' }]}
+                                            placeholderStyle={styles.placeholderStyle}
+                                            selectedTextStyle={styles.selectedTextStyle}
+                                            value={selectedEstab}
+                                            iconStyle={styles.iconStyle}
+                                            labelField="establecimiento"
+                                            valueField="establecimiento"
+                                            placeholder={'Establecimiento'}
+                                            searchPlaceholder="Search..."
+                                            onChange={(item) => {
+                                                const { establecimiento } = item;
+                                                setSelectedEstab(establecimiento);
+                                            }}
+                                        /> */}
+                                        <MaterialCommunityIcons style={{ color: '#fff' }} name="toy-brick-plus-outline" size={30} onPress={() => navigation.navigate("Electric")} />
+                                    </View>
+                                    <View style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                                        <SectionList
+                                            style={{ marginTop: 8 }}
+                                            sections={getSectionDataFromDispositivos()}
+                                            keyExtractor={(device, index) => `${device.grupo}-${index}`}
+                                            renderSectionHeader={({ section: { title } }) => (
+                                                <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
+                                            )}
+                                            renderItem={({ item }) => (
+                                                <SmallDeviceView device={item} />
+                                                // <Text>{item.nombreDispositivo}</Text>
+                                            )}
+                                        />
+                                    </View>
+                                </View>
+                            ) :
+                            (
+                                <View style={s.container}>
+                                    <Text style={{ fontSize: 32, fontVariant: 'bold' }}>!Bienvenido¡</Text>
+                                    <Text style={{ fontSize: 20 }}>Tal parece que eres nuevo por aquí!</Text>
+                                    <Pressable style={s.buttonContainer}
+                                        onPress={() => navigation.navigate("Electric")}
+                                    >
+                                        <Text style={s.button}>Añadir dispositivo</Text>
+                                    </Pressable>
+                                </View>
+                            )
+                    )
+            }
+            {/*
                 establecimientos.length > 0 ?
                     (
                         <View style={{ flex: 1 }}>
-                            <View style={{ width: '100%', padding: 12, backgroundColor: '#1D6FB8', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                {/* <Text style={{ color: '#fff', fontSize: 18 }}>Establecimiento: </Text> */}
-                                <Dropdown
-                                    mode="modal"
-                                    data={establecimientos}
-                                    style={[styles.dropdown, { minWidth: '75%' }]}
-                                    placeholderStyle={styles.placeholderStyle}
-                                    selectedTextStyle={styles.selectedTextStyle}
-                                    value={selectedEstab}
-                                    iconStyle={styles.iconStyle}
-                                    labelField="establecimiento"
-                                    valueField="establecimiento"
-                                    placeholder={'Establecimiento'}
-                                    searchPlaceholder="Search..."
-                                    onChange={(item) => {
-                                        const { establecimiento } = item;
-                                        setSelectedEstab(establecimiento);
-                                    }}
-                                />
+                            <View style={{ width: '100%', padding: 12, backgroundColor: '#1D6FB8', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
                                 <MaterialCommunityIcons style={{ color: '#fff' }} name="toy-brick-plus-outline" size={30} onPress={() => navigation.navigate("Electric")} />
                             </View>
                             <View style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-                                {/* {
-                                    dispositivos.map(device => (
-                                        <Text key={device.idDispositivo} style={{ margin: 16, textAlign: 'center', fontSize: 26 }}>{device.idDispositivo + '\n' + device.nombreDispositivo}</Text>
-                                    ))
-                                } */}
+
                                 {
                                     loadingDevices ?
                                         (
@@ -252,7 +310,7 @@ function Home({ navigation }) {
                             </Pressable>
                         </View>
                     )
-            }
+            */}
             <FlashMessage ref={(fm) => this.flashMessage = fm} position={'top'} />
         </>
     );

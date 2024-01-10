@@ -97,7 +97,7 @@ class Login extends Component {
 
                 // console.info("Usuario: ", await AsyncStorage.getItem("usuario"));
 
-                this.props.navigation.navigate("Root");
+                this.props.navigation.navigate("Tabs");
             })
             .catch(error => {
                 showMessage({

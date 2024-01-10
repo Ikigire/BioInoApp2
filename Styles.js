@@ -76,7 +76,7 @@ module.exports = StyleSheet.create({
     card: {
         width: '95%',
         marginHorizontal: 10,
-        marginTop: 10,
+        marginTop: 5,
         paddingVertical: 10,
         backgroundColor: '#1D6FB8',
         borderRadius: 25,

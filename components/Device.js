@@ -7,7 +7,7 @@ import SensorInfo from './SensorInfo'
 // const s = require("../Styles")
 
 
-const Device = ({ device }) => {
+const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, navigate = true}) => {
     if (!device) {
         return (
             <Text style={{ width: '100%', height: 80, fontSize: 14, textAlign: 'center' }}>
@@ -17,7 +17,7 @@ const Device = ({ device }) => {
     }
     const icon = findDeviceIcon(device.establecimiento, device.grupo);
     return (
-        <View style={s.card}>
+        <Pressable style={s.card} onPress={() => { navigate ? navigation.navigate("Mqtt", {mac: device.idDispositivo}) : null }}>
             <Text style={s.card_title}> {device.nombreDispositivo} </Text>
             <View style={{display: 'flex', width: '100%', marginBottom:8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
                 <MaterialCommunityIcons name={icon} size={40} color={'#fff'} />
@@ -28,8 +28,8 @@ const Device = ({ device }) => {
                     <Text style={[s.card_text, {textAlign: 'center'}]}> {device.modelo} </Text>
                 </View>
             </View>
-            <SensorInfo mac={device.idDispositivo} />
-        </View>
+            <SensorInfo mac={device.idDispositivo} showSensorInfo={showSensorInfo} intervalTime={interval}/>
+        </Pressable>
     )
 }
 

@@ -42,19 +42,19 @@ const SmallDeviceView = ({ device }) => {
         );
     }
 
-    const {setUpdateEstList} = useAppContext();
+    const { setUpdateEstList } = useAppContext();
 
     const eliminarDispositivo = () => {
         deleteDispositivo(device.idDispositivo)
-        .then(async resp => {
-            if (resp.status != 200){
-                console.error(await resp.json);
-                return;
-            }
+            .then(async resp => {
+                if (resp.status != 200) {
+                    console.error(await resp.json);
+                    return;
+                }
 
-            setUpdateEstList(true);
-        })
-        .catch(error => console.error(error));
+                setUpdateEstList(true);
+            })
+            .catch(error => console.error(error));
     }
 
     const handleTrashIconPress = () => {
@@ -63,7 +63,7 @@ const SmallDeviceView = ({ device }) => {
             '¿Está seguro?',
             [
                 { text: 'Si, Eliminalo', onPress: () => eliminarDispositivo() },
-                { text: 'No, Cancela', onPress: () => {} },
+                { text: 'No, Cancela', onPress: () => { } },
             ],
             {
                 cancelable: true
@@ -74,12 +74,17 @@ const SmallDeviceView = ({ device }) => {
     const icon = findDeviceIcon(device.establecimiento, device.grupo);
     return (
         <View style={estilo.container}>
-            <MaterialCommunityIcons name={icon} size={35} color={'#1D6FB8'} />
+            {
+                icon ?
+                <MaterialCommunityIcons name={icon} size={35} color={'#1D6FB8'} />
+                :
+                <></>
+            }
             <View style={estilo.textContainer}>
                 <Text style={estilo.title}>{device.nombreDispositivo}</Text>
                 <Text style={estilo.subTitle}>{device.idDispositivo}</Text>
             </View>
-            <MaterialCommunityIcons color={'red'} name='trash-can-outline' size={20} onPress={handleTrashIconPress}/>
+            <MaterialCommunityIcons color={'red'} name='trash-can-outline' size={20} onPress={handleTrashIconPress} />
         </View>
     )
 }

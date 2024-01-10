@@ -19,7 +19,7 @@ const estilos = StyleSheet.create({
     },
     infoCell: {
         width: '80%',
-        textAlign: 'auto',
+        textAlign: 'center',
         fontSize: 16,
         marginLeft: 2,
     },
@@ -39,25 +39,38 @@ const estilos = StyleSheet.create({
     textColorSuccess: {
         color: '#5cb85c'
     },
-
+    textColorInfo: {
+        color: '#5bc0de'
+    },
+    textColorPrimary: {
+        color: '#0275d8'
+    },
 })
-const HumidityInfo = () => {
+const TemperatureInfo = () => {
     return (
         <View style={[estilos.container]}>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorWarning]}>{'<40'}</Text>
-                <Text style={[estilos.infoCell]}>Ambiente seco, se requiere una mayor cantidad de humedad</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorInfo]}>{'<8'}</Text>
+                <Text style={[estilos.infoCell]}>Muy Frio</Text>
             </View>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorSuccess]}>{'40 - 60'}</Text>
-                <Text style={[estilos.infoCell]}>Menor probabilidad de asentamiento de bacterias y humedad ideal</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorPrimary]}>{'8 - 15'}</Text>
+                <Text style={[estilos.infoCell]}>Frio</Text>
             </View>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorDanger]}>{'60+'}</Text>
-                <Text style={[estilos.infoCell]}>Mayor probabilidad de asentamiento de bacterias</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorSuccess]}>{'16 - 30'}</Text>
+                <Text style={[estilos.infoCell]}>Ideal</Text>
+            </View>
+            <View style={[estilos.infoRow]}>
+                <Text style={[estilos.infoTitle, estilos.textColorWarning]}>{'31 - 40'}</Text>
+                <Text style={[estilos.infoCell]}>Caliente</Text>
+            </View>
+            <View style={[estilos.infoRow]}>
+                <Text style={[estilos.infoTitle, estilos.textColorDanger]}>{'40+'}</Text>
+                <Text style={[estilos.infoCell]}>Muy Caliente</Text>
             </View>
         </View>
     )
 }
 
-export default HumidityInfo
+export default TemperatureInfo

@@ -63,26 +63,28 @@ function Conectando({ navigation, route }) {
     }, [])
 
     return (
-        <View style={{ fontSize: 20, flex: 1, paddingHorizontal: 30, marginHorizontal: 30, textAlign: 'left', justifyContent: 'center', alignItems: "center" }}>
-            <Pressable style={(pressed) => [{ backgroundColor: pressed ? '#1D6FB8' : '#1D9FB8' }, { display: 'flex', justifyContent: 'center', borderColor: '#1D9FB8', borderWidth: 2, padding: 6 }]}
-                onPress={() => { this.flashMessage.showMessage({ message: 'Esta opción está en desarrollo', type: 'default', duration: 4000, icon: 'info' }) }}
-            >
-                <View style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                    <MaterialCommunityIcons name="qrcode" color={'white'} size={50} style={{ textAlign: 'center', width: '100%' }} />
-                    <Text style={{ color: 'white' }} >Leer QR</Text>
-                </View>
-            </Pressable>
+        <>
+            <ScrollView>
+                <View style={{ fontSize: 20, flex: 1, paddingHorizontal: 30, marginHorizontal: 30, textAlign: 'left', justifyContent: 'center', alignItems: "center" }}>
 
-            <View style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', marginVertical: 8 }}>
-                <View style={{ backgroundColor: 'black', height: 4, borderWidth: 1, borderColor: 'black', width: '45%', marginTop: '2.5%' }}></View>
-                <Text>O</Text>
-                <View style={{ backgroundColor: 'black', height: 4, borderWidth: 1, borderColor: 'black', width: '45%', marginTop: '2.5%' }}></View>
-            </View>
+                    <Pressable style={(pressed) => [{ backgroundColor: pressed ? '#1D6FB8' : '#1D9FB8' }, { display: 'flex', justifyContent: 'center', borderColor: '#1D9FB8', borderWidth: 2, padding: 6 }]}
+                        onPress={() => { this.flashMessage.showMessage({ message: 'Esta opción está en desarrollo', type: 'default', duration: 4000, icon: 'info' }) }}
+                    >
+                        <View style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                            <MaterialCommunityIcons name="qrcode" color={'white'} size={50} style={{ textAlign: 'center', width: '100%' }} />
+                            <Text style={{ color: 'white' }} >Leer QR</Text>
+                        </View>
+                    </Pressable>
 
-            <View style={[{ width: '100%' }]}>
-                <ScrollView>
-                    <Text style={{ textAlign: 'center' }}>Ingrese los siguientes datos</Text>
-                    {/* <TextInput
+                    <View style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', marginVertical: 8 }}>
+                        <View style={{ backgroundColor: 'black', height: 4, borderWidth: 1, borderColor: 'black', width: '45%', marginTop: '2.5%' }}></View>
+                        <Text>O</Text>
+                        <View style={{ backgroundColor: 'black', height: 4, borderWidth: 1, borderColor: 'black', width: '45%', marginTop: '2.5%' }}></View>
+                    </View>
+
+                    <View style={[{ width: '100%' }]}>
+                        <Text style={{ textAlign: 'center' }}>Ingrese los siguientes datos</Text>
+                        {/* <TextInput
                         style={globalStyle.input}
                         placeholder="Dirección MAC"
                         onChangeText={(text) => {setMac(text.toUpperCase());}}
@@ -91,43 +93,45 @@ function Conectando({ navigation, route }) {
                         blurOnSubmit={false}
                         onSubmitEditing={() => this.modeloInput.focus()}
                     /> */}
-                    <></>
-                    <TextInput
-                        ref={(input) => this.macInput = input}
-                        style={globalStyle.input}
-                        placeholder="Dirección MAC"
-                        onChangeText={async (text) => {await setIdDispositivo(text);}}
-                        returnKeyType="next"
-                        value={idDispositivo.toUpperCase()}
-                        blurOnSubmit={false}
-                        textContentType="name"
-                        onSubmitEditing={(event) => {
-                            // console.log(Object.keys(event.nativeEvent))
-                            // console.log((event.nativeEvent.text))
-                            // setIdDispositivo(event.nativeEvent.text.toUpperCase());
-                            this.modeloInput.focus()
-                        }}
-                    />
-                    <TextInput
-                        ref={(input) => this.modeloInput = input}
-                        style={globalStyle.input}
-                        placeholder="Modelo"
-                        value={modelo.toUpperCase()}
-                        onChangeText={async (text) => { await setModelo(text); }}
-                        blurOnSubmit={false}
-                        returnKeyType="done"
-                        onSubmitEditing={handleClick}
-                    />
-                    <View style={{ marginTop: 15, display: 'flex', justifyContent: 'center' }}>
-                        <Pressable onPress={handleClick} style={{ width: '100%', justifyContent: 'center', display: 'flex' }}>
-                            <Text style={[conditionalStyles.activeButton(disabled), { width: '100%' }]}>Siguiente</Text>
-                        </Pressable>
-                    </View>
-                </ScrollView>
+                        <></>
+                        <TextInput
+                            ref={(input) => this.macInput = input}
+                            style={globalStyle.input}
+                            placeholder="Dirección MAC"
+                            onChangeText={async (text) => { await setIdDispositivo(text); }}
+                            returnKeyType="next"
+                            value={idDispositivo.toUpperCase()}
+                            blurOnSubmit={false}
+                            textContentType="name"
+                            onSubmitEditing={(event) => {
+                                // console.log(Object.keys(event.nativeEvent))
+                                // console.log((event.nativeEvent.text))
+                                // setIdDispositivo(event.nativeEvent.text.toUpperCase());
+                                this.modeloInput.focus()
+                            }}
+                        />
+                        <TextInput
+                            ref={(input) => this.modeloInput = input}
+                            style={globalStyle.input}
+                            placeholder="Modelo"
+                            value={modelo.toUpperCase()}
+                            onChangeText={async (text) => { await setModelo(text); }}
+                            blurOnSubmit={false}
+                            returnKeyType="done"
+                            onSubmitEditing={handleClick}
+                        />
+                        <View style={{ marginTop: 15, display: 'flex', justifyContent: 'center' }}>
+                            <Pressable onPress={handleClick} style={{ width: '100%', justifyContent: 'center', display: 'flex' }}>
+                                <Text style={[conditionalStyles.activeButton(disabled), { width: '100%' }]}>Siguiente</Text>
+                            </Pressable>
+                        </View>
 
-            </View>
+                    </View>
+                </View>
+            </ScrollView>
+
             <FlashMessage ref={(flashMessage) => this.flashMessage = flashMessage} position={'top'} animated />
-        </View>
+        </>
     );
 }
 

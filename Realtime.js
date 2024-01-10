@@ -61,7 +61,7 @@ function Realtime({ navigation }) {
                 data={dispositivos}
                 keyExtractor={(device) => device.idDispositivo}
                 renderItem={({item}) => (
-                    <Device device={item}/>
+                    <Device device={item} navigation={navigation} />
                 )}
             />
             <FlashMessage ref={ref => this.flashMessage = ref} position={'top'} />

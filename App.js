@@ -80,7 +80,7 @@ export default function App() {
             options={{ headerTitle: (props) => <Logo {...props} />, headerStyle: { backgroundColor: '#1D6FB8' } }}
           />
           <Stack.Screen
-            name='Root'
+            name='Tabs'
             component={MyTabs}
             options={({ navigation }) => ({
               headerTitle: (props) => <LogoTitle {...props} />,

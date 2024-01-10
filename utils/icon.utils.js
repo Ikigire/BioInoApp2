@@ -25,8 +25,7 @@ export function findDeviceIcon(establecimiento, grupo) {
 
         default:
             return null;
-            break;
     }
 
-    return filteredIcons[0].icon;
+    return filteredIcons[0]?.icon;
 }

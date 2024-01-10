@@ -123,7 +123,7 @@ function Alias({ navigation, route }) {
                     throw new Error(error.message)
                 }
                 setUpdateEstList(true);
-                navigation.navigate("Root");
+                navigation.navigate("Tabs");
             })
             .catch( async (error) => {
                 setUnable(false);

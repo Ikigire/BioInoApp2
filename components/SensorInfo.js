@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { getDispositivoSensoresInfo } from '../services/mqtt.service'
 import HumidityInfo from './HumidityInfo'
+import TemperatureInfo from './TemperatureInfo'
 
 const statusValues = {
     conectando: 'Conectando...',
@@ -42,6 +43,22 @@ const estilo = StyleSheet.create({
             paddingHorizontal: 15,
             borderRadius: 15
         })
+    },
+    containerDetail: {
+        backgroundColor: '#fff',
+        width: '100%',
+        borderRadius: 15,
+        paddingHorizontal: 15,
+        alignItems: 'center',
+        // justifyContent: 'space-around'
+    },
+    containerTitle: {
+        backgroundColor: '#fff',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     sensorInfoContainer: {
         display: 'flex',
@@ -90,7 +107,10 @@ const estilo = StyleSheet.create({
 })
 
 
-const SensorInfo = ({ mac }) => {
+const SensorInfo = ({ mac,
+    showSensorInfo = true,
+    intervalTime = 5000
+}) => {
     if (!mac) {
         return (
             <View style={estilo.container(statusValues.sin_conexion)}>
@@ -108,13 +128,24 @@ const SensorInfo = ({ mac }) => {
     });
     const [reconectar, setReconectar] = useState(false);
     const [showValuesDetail, setShowValuesDetail] = useState(false);
+    const [showHumidityDetail, setShowHumidityDetail] = useState(false);
+    const [showTemperatureDetail, setShowTemperatureDetail] = useState(false);
     const [intervalId, setintervalId] = useState(null);
     // const [] = useState();
 
+
     const toggleShowValuesDetail = () => {
-        if (connectionStatus == statusValues.conectado) {
-            setShowValuesDetail(prev => !prev);
-        }
+        // if (connectionStatus == statusValues.conectado) {
+        setShowValuesDetail(prev => !prev);
+        // }
+    }
+
+    const toggleShowHumidityDetail = () => {
+        setShowHumidityDetail(prev => !prev);
+    }
+
+    const toggleShowTemperatureDetail = () => {
+        setShowTemperatureDetail(prev => !prev);
     }
 
     const getDeviceData = () => {
@@ -139,15 +170,21 @@ const SensorInfo = ({ mac }) => {
 
     useEffect(() => {
         getDeviceData();
+
+        return () => {
+            clearInterval(intervalId);
+        }
     }, [])
 
     useEffect(() => {
         if (reconectar) {
-            setTimeout(() => {
+            const id = setTimeout(() => {
                 setConnectionStatus(statusValues.reconectando)
                 setReconectar(false);
                 getDeviceData();
-            }, 3000);
+            }, intervalTime);
+
+            setintervalId(id);
         }
     }, [reconectar])
 
@@ -159,7 +196,7 @@ const SensorInfo = ({ mac }) => {
         setInterval(() => {
             if (connectionStatus == statusValues.conectado)
                 getDeviceData();
-        }, 2000);
+        }, intervalTime);
     }, [connectionStatus])
 
     return (
@@ -168,36 +205,64 @@ const SensorInfo = ({ mac }) => {
                 onPress={toggleShowValuesDetail}
             >
                 {
-                    connectionStatus == statusValues.conectado ?
+                    showSensorInfo ?
+                        (
+                            connectionStatus == statusValues.conectado ?
+                                (
+                                    <>
+                                        <View style={[estilo.sensorInfoContainer]}>
+                                            <MaterialCommunityIcons name='temperature-celsius' size={30} />
+                                            <Text style={estilo.sensorTempValue(deviceSensor.t)}>{deviceSensor.t}</Text>
+                                        </View>
+                                        <View style={[estilo.sensorInfoContainer]}>
+                                            <MaterialCommunityIcons name='air-humidifier' size={30} />
+                                            <Text style={estilo.sensorHumiValue(deviceSensor.h)}>{deviceSensor.h}</Text>
+                                        </View>
+                                    </>
+                                ) :
+                                <Text style={estilo.sensorStatus}>{connectionStatus}</Text>
+                        )
+                        :
                         (
                             <>
-                                <View style={[estilo.sensorInfoContainer]}>
-                                    <MaterialCommunityIcons name='temperature-celsius' size={30} />
-                                    <Text style={estilo.sensorTempValue(deviceSensor.t)}>{deviceSensor.t}</Text>
-                                </View>
-                                <View style={[estilo.sensorInfoContainer]}>
-                                    <MaterialCommunityIcons name='air-humidifier' size={30} />
-                                    <Text style={estilo.sensorHumiValue(deviceSensor.h)}>{deviceSensor.h}</Text>
-                                </View>
+                                <Text style={estilo.sensorStatus}>{connectionStatus}</Text>
                             </>
-                        ) :
-                        <Text style={estilo.sensorStatus}>{connectionStatus}</Text>
+                        )
                 }
             </Pressable>
-            <View>
-                <View style={[estilo.container(statusValues.conectado), { marginTop: 8, justifyContent: 'space-between' }]}>
-                    <Text>Ver Detalle sensor de temperatura </Text>
-                    <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
-                </View>
-                <HumidityInfo />
-            </View>
-            <View style={[estilo.container(statusValues.conectado), { marginTop: 8, justifyContent: 'space-between' }]}>
-                <Text>Ver Detalle sensor de humedad </Text>
-                <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
-            </View>
             {
-                showValuesDetail ? (
+                showSensorInfo ? (
                     <>
+                        <Pressable style={[estilo.containerDetail, { marginTop: 8, justifyContent: 'space-between' }]} onPress={toggleShowHumidityDetail}>
+                            <View style={[estilo.containerTitle]}>
+                                <Text>Ver información sensor de Humedad </Text>
+                                <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
+                            </View>
+                            {
+                                showHumidityDetail ?
+                                    <View style={[estilo.container(statusValues.conectado)]}>
+                                        <HumidityInfo />
+                                    </View>
+                                    :
+                                    <></>
+
+                            }
+                        </Pressable>
+                        <Pressable style={[estilo.containerDetail, { marginTop: 8, justifyContent: 'space-between' }]} onPress={toggleShowTemperatureDetail}>
+                            <View style={[estilo.containerTitle]}>
+                                <Text>Ver información sensor de Temperatura </Text>
+                                <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
+                            </View>
+                            {
+                                showTemperatureDetail ?
+                                    <View style={[estilo.container(statusValues.conectado)]}>
+                                        <TemperatureInfo />
+                                    </View>
+                                    :
+                                    <></>
+
+                            }
+                        </Pressable>
                     </>
                 ) :
                     (
