@@ -17,10 +17,19 @@ const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, n
     }
 
     const navigateTo = () => {
-        if (destination.toLowerCase() == "none")
-            return;
+        switch (destination) {
+            case "Mqtt":
+                navigation.navigate(destination, {mac: device.idDispositivo})
+                break;
+        
+            case "Histo":
+                navigation.navigate(destination, {mac: device.idDispositivo})
+                break;
+        
+            default:
+                break;
+        }
 
-        navigation.navigate(destination, {mac: device.idDispositivo})
     };
         const icon = findDeviceIcon(device.establecimiento, device.grupo);
     return (
