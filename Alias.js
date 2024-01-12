@@ -7,7 +7,7 @@ import { Modal } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createGrupo, deleteGrupo } from "./services/grupo.service";
 import { createDispositivo } from "./services/dispositivo.service";
-import { useAppContext } from "./App";
+import { useAppContext } from "./utils/app-context";
 
 const s = require("./Styles")
 

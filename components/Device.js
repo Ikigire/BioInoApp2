@@ -7,7 +7,7 @@ import SensorInfo from './SensorInfo'
 // const s = require("../Styles")
 
 
-const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, navigate = true}) => {
+const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, navigate = true, connect = true, destination = 'Mqtt'}) => {
     if (!device) {
         return (
             <Text style={{ width: '100%', height: 80, fontSize: 14, textAlign: 'center' }}>
@@ -15,12 +15,19 @@ const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, n
             </Text>
         );
     }
-    const icon = findDeviceIcon(device.establecimiento, device.grupo);
+
+    const navigateTo = () => {
+        if (destination.toLowerCase() == "none")
+            return;
+
+        navigation.navigate(destination, {mac: device.idDispositivo})
+    };
+        const icon = findDeviceIcon(device.establecimiento, device.grupo);
     return (
-        <Pressable style={s.card} onPress={() => { navigate ? navigation.navigate("Mqtt", {mac: device.idDispositivo}) : null }}>
+        <Pressable style={s.card} onPress={navigateTo}>
             <Text style={s.card_title}> {device.nombreDispositivo} </Text>
             <View style={{display: 'flex', width: '100%', marginBottom:8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
-                <MaterialCommunityIcons name={icon} size={40} color={'#fff'} />
+                <MaterialCommunityIcons name={icon} size={50} color={'#fff'} />
                 <View>
                     <Text style={[s.card_text, {textAlign: 'center'}]}> Ubicación: </Text>
                     <Text style={[s.card_text, {textAlign: 'center'}]}> {`${device.establecimiento} - ${device.grupo}`} </Text>
@@ -28,7 +35,14 @@ const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, n
                     <Text style={[s.card_text, {textAlign: 'center'}]}> {device.modelo} </Text>
                 </View>
             </View>
-            <SensorInfo mac={device.idDispositivo} showSensorInfo={showSensorInfo} intervalTime={interval}/>
+            {
+                connect ? 
+                (
+                    <SensorInfo mac={device.idDispositivo} showSensorInfo={showSensorInfo} intervalTime={interval}/>
+                )
+                :
+                <></>
+            }
         </Pressable>
     )
 }

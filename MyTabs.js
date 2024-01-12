@@ -28,16 +28,17 @@ const MyTabs = ({ navigation }) => {
 
     const addBackEventListener = () => {
         BackHandler.addEventListener('hardwareBackPress', backPressed);
-        setIsFocused(true);
+        // setIsFocused(true);
     }
     const removeBackEventListener = () => {
         BackHandler.removeEventListener('hardwareBackPress', backPressed);
-        setIsFocused(false);
+        // setIsFocused(false);
+        console.log("Limpiando intervals");
     }
     
     useEffect(() => {
-        navigation.addListener('focus',  () => {addBackEventListener()});
-        navigation.addListener('blur',  () => {removeBackEventListener()});
+        navigation.addListener('focus',  () => {addBackEventListener(); setIsFocused(true);});
+        navigation.addListener('blur',  () => {removeBackEventListener(); setIsFocused(false);});
     }, []);
 
     if (!isFocused) {

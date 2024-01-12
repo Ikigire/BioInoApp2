@@ -7,13 +7,13 @@ import TemperatureInfo from './TemperatureInfo'
 
 const statusValues = {
     conectando: 'Conectando...',
-    sin_conexion: 'Sin conexión',
+    sin_conexion: 'Desconectado',
     reconectando: 'Reconectando...',
     conectado: 'Conectado'
 }
 
 const estilo = StyleSheet.create({
-    container: (status) => {
+    container: (status, onlyStatus = false) => {
         let bgColor = ''
         switch (status) {
             case statusValues.conectando:
@@ -29,7 +29,7 @@ const estilo = StyleSheet.create({
                 break;
 
             default:
-                bgColor = '#fff'
+                bgColor = onlyStatus ? '#28a745' : '#fff'
 
                 break;
         }
@@ -148,9 +148,21 @@ const SensorInfo = ({ mac,
         setShowTemperatureDetail(prev => !prev);
     }
 
+    const roundNumber = (number) => {
+        number = parseFloat(number);
+        if ((number - parseInt(number)) > 0.5) {
+            number = Math.ceil(number);
+        } else {
+            number = Math.floor(number);
+        }
+        return number;
+    }
+
     const getDeviceData = () => {
-        if (connectionStatus == statusValues.conectado)
-            console.info('Pbteniendo datos: ', connectionStatus);
+        // if (connectionStatus == statusValues.conectado) {
+        //     console.info('Obteniendo datos: ', connectionStatus);
+        //     console.log("ID activo: ", intervalId);
+        // }
         getDispositivoSensoresInfo(mac)
             .then(async resp => {
                 if (resp.status != 200) {
@@ -170,38 +182,42 @@ const SensorInfo = ({ mac,
 
     useEffect(() => {
         getDeviceData();
-
-        return () => {
-            clearInterval(intervalId);
-        }
     }, [])
 
     useEffect(() => {
         if (reconectar) {
-            const id = setTimeout(() => {
+            setTimeout(() => {
                 setConnectionStatus(statusValues.reconectando)
                 setReconectar(false);
                 getDeviceData();
             }, intervalTime);
-
-            setintervalId(id);
         }
     }, [reconectar])
 
     useEffect(() => {
-        // if (connectionStatus == statusValues.conectado)
-        //     setTimeout(() => {
-        //         getDeviceData();
-        //     }, 500);
-        setInterval(() => {
+        const id = setInterval(() => {
             if (connectionStatus == statusValues.conectado)
                 getDeviceData();
         }, intervalTime);
+        setintervalId(id);
     }, [connectionStatus])
+    
+    useEffect(() => {
+        console.log("Nuevo interval Id:", intervalId);
+        if (connectionStatus != statusValues.conectado) {
+            // console.log("\n\nLimpiando intervalId", intervalId);
+            clearInterval(intervalId);
+        }
+
+        return () => {
+            // console.log("Limpiando las cosas", intervalId);
+            clearInterval(intervalId);
+        }
+    }, [intervalId]);
 
     return (
         <>
-            <Pressable style={[estilo.container(connectionStatus)]}
+            <Pressable style={[estilo.container(connectionStatus, !showSensorInfo)]}
                 onPress={toggleShowValuesDetail}
             >
                 {
@@ -211,12 +227,14 @@ const SensorInfo = ({ mac,
                                 (
                                     <>
                                         <View style={[estilo.sensorInfoContainer]}>
-                                            <MaterialCommunityIcons name='temperature-celsius' size={30} />
-                                            <Text style={estilo.sensorTempValue(deviceSensor.t)}>{deviceSensor.t}</Text>
+                                            {/* <MaterialCommunityIcons name='air-humidifier' size={30} /> */}
+                                            <Text style={{ fontSize: 25, fontWeight: 'bold' }}>H: </Text>
+                                            <Text style={estilo.sensorHumiValue(deviceSensor.h)}>{roundNumber(deviceSensor.h)}%</Text>
                                         </View>
                                         <View style={[estilo.sensorInfoContainer]}>
-                                            <MaterialCommunityIcons name='air-humidifier' size={30} />
-                                            <Text style={estilo.sensorHumiValue(deviceSensor.h)}>{deviceSensor.h}</Text>
+                                            {/* <MaterialCommunityIcons name='temperature-celsius' size={30} /> */}
+                                            <Text style={{ fontSize: 25, fontWeight: 'bold' }}>T: </Text>
+                                            <Text style={estilo.sensorTempValue(deviceSensor.t)}>{roundNumber(deviceSensor.t)}<Text style={{ fontSize: 22 }}>°</Text></Text>
                                         </View>
                                     </>
                                 ) :
@@ -225,7 +243,7 @@ const SensorInfo = ({ mac,
                         :
                         (
                             <>
-                                <Text style={estilo.sensorStatus}>{connectionStatus}</Text>
+                                <Text style={[estilo.sensorStatus]}>{connectionStatus}</Text>
                             </>
                         )
                 }
@@ -235,7 +253,7 @@ const SensorInfo = ({ mac,
                     <>
                         <Pressable style={[estilo.containerDetail, { marginTop: 8, justifyContent: 'space-between' }]} onPress={toggleShowHumidityDetail}>
                             <View style={[estilo.containerTitle]}>
-                                <Text>Ver información sensor de Humedad </Text>
+                                <Text>Niveles de Humedad </Text>
                                 <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
                             </View>
                             {
@@ -250,7 +268,7 @@ const SensorInfo = ({ mac,
                         </Pressable>
                         <Pressable style={[estilo.containerDetail, { marginTop: 8, justifyContent: 'space-between' }]} onPress={toggleShowTemperatureDetail}>
                             <View style={[estilo.containerTitle]}>
-                                <Text>Ver información sensor de Temperatura </Text>
+                                <Text>Niveles de Temperatura </Text>
                                 <MaterialCommunityIcons name='arrow-down-drop-circle-outline' size={20} />
                             </View>
                             {
@@ -260,7 +278,6 @@ const SensorInfo = ({ mac,
                                     </View>
                                     :
                                     <></>
-
                             }
                         </Pressable>
                     </>

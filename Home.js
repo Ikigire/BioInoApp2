@@ -6,9 +6,10 @@ import { usuarioItemKey } from "./utils/constantes";
 import FlashMessage from "react-native-flash-message";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Dropdown } from "react-native-element-dropdown";
-import { useAppContext } from "./App";
+// import { useAppContext } from "./utils/app-context";
 import { getDispositivosByEstablecimientoUsuario, getDispositivosUsuario } from "./services/dispositivo.service";
 import SmallDeviceView from "./components/SmallDeviceView";
+import { useAppContext } from "./utils/app-context";
 
 
 const s = require("./Styles")
@@ -143,7 +144,7 @@ function Home({ navigation }) {
             }
         });
 
-        console.log(sections);
+        // console.log(sections);
         return sections;
     }
 
@@ -158,7 +159,7 @@ function Home({ navigation }) {
                     throw new Error(error.message ?? '');
                 }
                 const devices = await resp.json();
-                console.log(devices);
+                // console.log(devices);
                 setDispositivos(devices);
             })
             .catch(error => {
@@ -238,9 +239,9 @@ function Home({ navigation }) {
                                         /> */}
                                         <MaterialCommunityIcons style={{ color: '#fff' }} name="toy-brick-plus-outline" size={30} onPress={() => navigation.navigate("Electric")} />
                                     </View>
-                                    <View style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                                    <View style={{ width: '100%', height: '92%', overflow: 'hidden' }}>
                                         <SectionList
-                                            style={{ marginTop: 8 }}
+                                            style={{ marginVertical: 8  }}
                                             sections={getSectionDataFromDispositivos()}
                                             keyExtractor={(device, index) => `${device.grupo}-${index}`}
                                             renderSectionHeader={({ section: { title } }) => (

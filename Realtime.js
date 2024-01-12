@@ -1,8 +1,8 @@
-import { View, Text, Image, Pressable, ScrollView, FlatList } from 'react-native';
+import { View, Text, Image, Pressable, ScrollView, FlatList, ActivityIndicator } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './Styles';
 import { useEffect, useState } from 'react';
-import { useAppContext } from './App';
+import { useAppContext } from './utils/app-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usuarioItemKey } from './utils/constantes';
 import { getDispositivosUsuario } from './services/dispositivo.service';
@@ -13,6 +13,7 @@ const s = require("./Styles")
 
 function Realtime({ navigation }) {
     const [dispositivos, setDispositivos] = useState([]);
+    const [isFocused, setIsFocused] = useState(true);
 
     const getUserId = async () => {
         const { idUsuario } = JSON.parse(await AsyncStorage.getItem(usuarioItemKey));
@@ -26,10 +27,10 @@ function Realtime({ navigation }) {
                     setDispositivos([]);
                     return;
                 }
-                
+
                 if (resp.status != 200) {
                     const error = await resp.json();
-                    this.flashMessage-showMessage({
+                    this.flashMessage - showMessage({
                         message: `Algo salió mal\n${error.errorType}\n${error.message}`,
                         type: 'danger',
                         icon: 'danger',
@@ -47,6 +48,8 @@ function Realtime({ navigation }) {
 
     useEffect(() => {
         getUserDevices();
+        navigation.addListener('focus', () => { setIsFocused(true); });
+        navigation.addListener('blur', () => { setIsFocused(false); });
     }, []);
 
     useEffect(() => {
@@ -55,15 +58,28 @@ function Realtime({ navigation }) {
         }
     }, [updateEstList]);
 
+    if (!isFocused) {
+        return <></>;
+    }
+
     return (
         <View>
-            <FlatList
-                data={dispositivos}
-                keyExtractor={(device) => device.idDispositivo}
-                renderItem={({item}) => (
-                    <Device device={item} navigation={navigation} />
-                )}
-            />
+            {
+                isFocused && dispositivos.length > 0 ?
+                    <>
+                        <FlatList
+                            data={dispositivos}
+                            keyExtractor={(device) => device.idDispositivo}
+                            renderItem={({ item }) => (
+                                <Device device={item} navigation={navigation} />
+                            )}
+                        />
+                    </>
+                    :
+                    <>
+                        <ActivityIndicator size={'large'} />
+                    </>
+            }
             <FlashMessage ref={ref => this.flashMessage = ref} position={'top'} />
         </View>
     );

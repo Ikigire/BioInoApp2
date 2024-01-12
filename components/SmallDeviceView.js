@@ -3,7 +3,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import { findDeviceIcon } from '../utils/icon.utils';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { deleteDispositivo } from '../services/dispositivo.service';
-import { useAppContext } from '../App';
+import { useAppContext } from '../utils/app-context';
 
 
 const estilo = StyleSheet.create({

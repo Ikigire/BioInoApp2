@@ -22,13 +22,8 @@ import PassRecover from './PassRecover';
 import ModificarUsuario from './ModificarUsuario';
 import MacDir from './MacDir';
 import { createContext, useContext, useState } from 'react';
+import { appContext } from './utils/app-context';
 //import MacDir from './MacDir';
-
-const appContext = createContext(null);
-
-export const useAppContext = () => {
-  return useContext(appContext);
-}
 
 const Stack = createNativeStackNavigator();
 

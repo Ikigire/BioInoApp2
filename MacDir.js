@@ -83,8 +83,8 @@ function MacDir({ route, navigation }) {
         device ?
           (
             <>
-              <Device device={device} showSensorInfo={true} interval={2000} navigate={false} />
-              <ScrollView style={[{ width: '100%', marginTop: 4 }]}>
+              <Device device={device} showSensorInfo={true} interval={3000} navigate={false} />
+              {/* <ScrollView style={[{ width: '100%', marginTop: 4 }]}>
                 <View style={[{ borderColor: '#ff4d55', borderWidth: 2, padding: 4 }]}>
                   <Text style={[{ textAlign: 'center', width: '100%' }]}> Dispositivo {deviceData.idDispositivo}</Text>
                   <Text style={[{ textAlign: 'center', width: '100%' }]}> Humedad: {deviceData.h}</Text>
@@ -160,7 +160,7 @@ function MacDir({ route, navigation }) {
                   <Text style={[{ textAlign: 'center', width: '100%' }]}> Humedad: {deviceData.h}</Text>
                   <Text style={[{ textAlign: 'center', width: '100%' }]}> Temperatura {deviceData.t}</Text>
                 </View>
-              </ScrollView>
+              </ScrollView> */}
             </>
           )
           :
