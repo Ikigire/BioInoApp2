@@ -17,13 +17,17 @@ const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, n
     }
 
     const navigateTo = () => {
+        if ( !navigate ) {
+            return;
+        }
+        
         switch (destination) {
             case "Mqtt":
                 navigation.navigate(destination, {mac: device.idDispositivo})
                 break;
         
             case "Histo":
-                navigation.navigate(destination, {mac: device.idDispositivo})
+                navigation.navigate(destination, {device})
                 break;
         
             default:
@@ -35,6 +39,7 @@ const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, n
     return (
         <Pressable style={s.card} onPress={navigateTo}>
             <Text style={s.card_title}> {device.nombreDispositivo} </Text>
+            <Text style={s.card_subtitle}> {device.idDispositivo} </Text>
             <View style={{display: 'flex', width: '100%', marginBottom:8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
                 <MaterialCommunityIcons name={icon} size={50} color={'#fff'} />
                 <View>

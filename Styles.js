@@ -93,6 +93,13 @@ module.exports = StyleSheet.create({
         fontSize: 26,
         marginVertical: 6
     },
+    card_subtitle: {
+        color: '#fff',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        fontSize: 16,
+        marginVertical: 6
+    },
     card_text: {
         color: '#fff'
     },

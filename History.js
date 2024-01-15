@@ -1,4 +1,4 @@
-import { Button, View, Text, Image, FlatList, ActivityIndicator } from 'react-native';
+import { Button, View, Text, Image, FlatList, ActivityIndicator, SectionList } from 'react-native';
 import styles from './Styles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { usuarioItemKey } from './utils/constantes';
 import { getDispositivosUsuario } from './services/dispositivo.service';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import Device from './components/Device';
+import { getSectionDataFromDispositivos } from './utils/devices.utils';
 
 
 const s = require("./Styles")
@@ -60,14 +61,31 @@ function History({ navigation }) {
         <View>
             {
                 dispositivos.length > 0 ?
-                    <FlatList
-                        style={[{ marginVertical: 3 }]}
-                        data={dispositivos}
-                        keyExtractor={(device) => device.idDispositivo}
-                        renderItem={({ item }) => (
-                            <Device device={item} navigation={navigation} connect={false} destination='Histo' />
-                        )}
-                    />
+                    <>
+                        <SectionList 
+                            style={{ marginVertical: 8  }}
+                            sections={getSectionDataFromDispositivos(dispositivos)}
+                            keyExtractor={(device, index) => `${device.grupo}-${index}`}
+                            renderSectionHeader={({ section: { title } }) => (
+                                <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
+                            )}
+                            renderItem={({ item }) => (
+                                <Device device={item} navigation={navigation} connect={false} destination='Histo' />
+                                
+                                // <SmallDeviceView device={item} />
+                                // <Text>{item.nombreDispositivo}</Text>
+                            )}
+                        />
+                        {/* <FlatList
+                            style={[{ marginVertical: 3 }]}
+                            data={dispositivos}
+                            keyExtractor={(device) => device.idDispositivo}
+                            renderItem={({ item }) => (
+                                <Device device={item} navigation={navigation} connect={false} destination='Histo' />
+                            )}
+                        /> */}
+                    </>
+
                     :
                     <ActivityIndicator size={'large'} />
             }

@@ -10,6 +10,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { getDispositivosByEstablecimientoUsuario, getDispositivosUsuario } from "./services/dispositivo.service";
 import SmallDeviceView from "./components/SmallDeviceView";
 import { useAppContext } from "./utils/app-context";
+import { getSectionDataFromDispositivos } from "./utils/devices.utils";
 
 
 const s = require("./Styles")
@@ -124,29 +125,29 @@ function Home({ navigation }) {
         getSectionDataFromDispositivos();
     }
 
-    const getSectionDataFromDispositivos = () => {
-        const sections = [];
-        dispositivos.forEach((device) => {
-            let added = false;
+    // const getSectionDataFromDispositivos = () => {
+    //     const sections = [];
+    //     dispositivos.forEach((device) => {
+    //         let added = false;
 
-            sections.forEach(section => {
-                if (section.title == device.establecimiento) {
-                    added = true;
-                    section.data = [...section.data, device];
-                }
-            })
+    //         sections.forEach(section => {
+    //             if (section.title == device.establecimiento) {
+    //                 added = true;
+    //                 section.data = [...section.data, device];
+    //             }
+    //         })
 
-            if (!added) {
-                sections.push({
-                    title: device.establecimiento,
-                    data: [device]
-                });
-            }
-        });
+    //         if (!added) {
+    //             sections.push({
+    //                 title: device.establecimiento,
+    //                 data: [device]
+    //             });
+    //         }
+    //     });
 
-        // console.log(sections);
-        return sections;
-    }
+    //     // console.log(sections);
+    //     return sections;
+    // }
 
     const getDispositivosByUserId = (id) => {
         getDispositivosUsuario(id)
@@ -242,7 +243,7 @@ function Home({ navigation }) {
                                     <View style={{ width: '100%', height: '92%', overflow: 'hidden' }}>
                                         <SectionList
                                             style={{ marginVertical: 8  }}
-                                            sections={getSectionDataFromDispositivos()}
+                                            sections={getSectionDataFromDispositivos(dispositivos)}
                                             keyExtractor={(device, index) => `${device.grupo}-${index}`}
                                             renderSectionHeader={({ section: { title } }) => (
                                                 <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
