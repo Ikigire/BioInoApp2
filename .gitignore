@@ -9,6 +9,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+BioInoApp2.zip
 
 # macOS
 .DS_Store
