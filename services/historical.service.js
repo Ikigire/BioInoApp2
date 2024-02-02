@@ -11,11 +11,16 @@ export function getDeviceHistorical(
     order = null
 ) {
     const addQueryParamsDelimitator = page || pageElements || from || to || order;
-    const url = `${dynamoDbUrl}/${mac}${addQueryParamsDelimitator? '?': ''}${page ? 'page='+page: ''}${pageElements ? '&pageElements='+pageElements: ''}${from ? '&from='+from: ''}${to ? '&to='+to: ''}${order ? '&order='+order: ''}`;
+    const url = `${dynamoDbUrl}/${mac}/pagination${addQueryParamsDelimitator? '?': ''}${page ? 'page='+page: ''}${pageElements ? '&pageElements='+pageElements: ''}${from ? '&from='+from: ''}${to ? '&to='+to: ''}${order ? '&order='+order: ''}`;
     return fetch(url);
 }
 
 export function getDeviceHistoricalDateRange( mac ) {
     const url = `${dynamoDbUrl}/${mac}/datesrange`;
+    return fetch(url);
+}
+
+export function getDeviceGraphicHistoricalData( mac, period = '24h' ) {
+    const url = `${dynamoDbUrl}/${mac}/graphic?period=${period}`;
     return fetch(url);
 }

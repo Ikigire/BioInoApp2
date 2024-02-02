@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Text, View, Image, ActivityIndicator, ScrollView, TextInput } from 'react-native';
+import { Text, View, Image, ActivityIndicator, ScrollView, TextInput, Pressable } from 'react-native';
 import Device from './components/Device';
 import { getDeviceHistorical } from './services/historical.service';
 import FlashMessage from 'react-native-flash-message';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 // import DatePicker from 'react-native-date-picker';
 // import RNDateTimePicker from '@react-native-community/datetimepicker';
 
@@ -122,7 +124,7 @@ function HistoryData({ route, navigation }) {
             </DatePicker> */}
 
             {/* <View style={[s.card]}> */}
-                <Text style={[s.card_title, { color: '#000' }]}>Histórico</Text>
+            <Text style={[s.card_title, { color: '#000' }]}>Histórico</Text>
             {/* </View> */}
 
             <ScrollView style={[{ width: '100%', marginTop: 5 }]} onScroll={onScrollToEnd} ref={ref => this.scroll = ref}>
@@ -186,12 +188,22 @@ function HistoryData({ route, navigation }) {
                                     <Text style={[{ textAlign: 'center', width: '100%' }]}>Extrayendo datos por favor espere...</Text>
                                 </>
                             )
-
-
-
                     }
                 </View>
             </ScrollView>
+            {
+                history?.data?.length ?
+                    <Pressable
+                        onPress={() => navigation.navigate("graphics", { mac: device.idDispositivo })}
+                        style={[{ width: '100%', paddingVertical: 5, backgroundColor: '#1D6FB8', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}
+                    >
+                        <MaterialCommunityIcons name='chart-bar' color={'#fff'} size={30} />
+                        <Text style={[{ textAlign: 'center', fontSize: 18, color: '#fff' }]}> Ver gráfica de histórico</Text>
+                    </Pressable>
+                    :
+                    <></>
+
+            }
 
             <FlashMessage ref={ref => this.flashMessage = ref} position={'top'} />
         </View>

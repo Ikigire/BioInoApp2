@@ -23,6 +23,7 @@ import ModificarUsuario from './ModificarUsuario';
 import MacDir from './MacDir';
 import { createContext, useContext, useState } from 'react';
 import { appContext } from './utils/app-context';
+import GraphicHistory from './GraphicHistory';
 //import MacDir from './MacDir';
 
 const Stack = createNativeStackNavigator();
@@ -148,7 +149,11 @@ export default function App() {
             component={MacDir}
             options={{ headerTitle: 'Device', headerStyle: { backgroundColor: '#1D6FB8' } }}
           />
-
+          <Stack.Screen
+            name='graphics'
+            component={GraphicHistory}
+            options={{ headerTitle: 'Historial', headerStyle: { backgroundColor: '#1D6FB8' } }}
+          />
 
         </Stack.Navigator>
       </NavigationContainer>
