@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, Pressable, TextInput, Keyboard, Animated } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import { baseUrl } from "./utils/constantes";
+import { createValidationCode } from "./services/email-validation.service";
 
 
 globalStyle = require("./Styles");
@@ -23,7 +24,7 @@ class Signin extends Component {
     this.setState({ email: text, disabled: false });
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     if (!emailRegex.test(text)) {
-      this.refs.myLocalFlashMessage.showMessage({
+      this.myLocalFlashMessage.showMessage({
         message: "Correo electrónico inválido",
         type: "danger",
       });
@@ -49,7 +50,7 @@ class Signin extends Component {
           }
         });
 
-        this.refs.myLocalFlashMessage.showMessage({
+        this.myLocalFlashMessage.showMessage({
           message,
           type
         })
@@ -65,7 +66,7 @@ class Signin extends Component {
     Keyboard.dismiss();
 
     if (!this.state.username || !this.state.email || !this.state.password || !this.state.confirmPassword) {
-      this.refs.myLocalFlashMessage.showMessage({
+      this.myLocalFlashMessage.showMessage({
         message: "Faltan campos por llenar",
         type: "danger",
       });
@@ -76,7 +77,8 @@ class Signin extends Component {
 
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     if (!emailRegex.test(this.state.email)) {
-      this.refs.myLocalFlashMessage.showMessage({
+
+      this.myLocalFlashMessage.showMessage({
         message: "Correo electrónico inválido",
         type: "danger",
       });
@@ -85,7 +87,7 @@ class Signin extends Component {
       return;
     }
     if (this.state.password !== this.state.confirmPassword) {
-      this.refs.myLocalFlashMessage.showMessage({
+      this.myLocalFlashMessage.showMessage({
         message: "Las contraseñas no coinciden",
         type: "danger",
       });
@@ -99,39 +101,64 @@ class Signin extends Component {
       email: this.state.email,
       password: this.state.password
     };
-    // console.log(newUser);
 
-    const url = `${baseUrl}/usuarios`;
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newUser),
-      // body: newUser,
-    })
-      .then((response) => response.json())
-      .then((resp) => {
-        if (resp.errorType ?? false) {
-          this.refs.myLocalFlashMessage.showMessage({
-            message: `Algo salió mal\n${resp.message}`,
-            type: "danger",
+    createValidationCode(newUser.email)
+      .then(async (resp) => {
+        if (resp.status != 200) {
+          this.myLocalFlashMessage.showMessage({
+            message: (await resp.json()).message,
+            type: 'danger',
+            icon: 'danger',
             duration: 3000
           });
-        this.setState({ disabled: false });
-
-          return
+          return;
         }
-        this.props.navigation.navigate("Login");
+
+        this.props.navigation.navigate("ValidateEmail", { newUser });
       })
-      .catch((error) => {
-        console.error("Error al registrar el usuario:", error);
-        this.setState({ disabled: false });
-        this.refs.myLocalFlashMessage.showMessage({
-          message: `No fue posible registrar al usuario ${error}`,
-          type: 'danger'
-        })
-      });
+      .catch((error => {
+        console.log(error);
+        this.myLocalFlashMessage.showMessage({
+          message: error.message,
+          type: 'danger',
+          icon: 'danger',
+          duration: 3000
+        });
+      }));
+
+    // console.log(newUser);
+
+    // const url = `${baseUrl}/usuarios`;
+    // fetch(url, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(newUser),
+    //   // body: newUser,
+    // })
+    //   .then((response) => response.json())
+    //   .then((resp) => {
+    //     if (resp.errorType ?? false) {
+    //       this.refs.myLocalFlashMessage.showMessage({
+    //         message: `Algo salió mal\n${resp.message}`,
+    //         type: "danger",
+    //         duration: 3000
+    //       });
+    //     this.setState({ disabled: false });
+
+    //       return
+    //     }
+    //     this.props.navigation.navigate("Login");
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error al registrar el usuario:", error);
+    //     this.setState({ disabled: false });
+    //     this.refs.myLocalFlashMessage.showMessage({
+    //       message: `No fue posible registrar al usuario ${error}`,
+    //       type: 'danger'
+    //     })
+    //   });
 
     // fetch(`http://3.133.59.124:4000/checkEmail/${this.state.email}`)
     //   .then((response) => response.json())
@@ -222,7 +249,7 @@ class Signin extends Component {
         </View>
 
         {/* Componente FlashMessage para mostrar notificaciones */}
-        <FlashMessage ref="myLocalFlashMessage" position="bottom" />
+        <FlashMessage ref={(ref) => this.myLocalFlashMessage = ref} position="bottom" />
       </View>
     );
   }

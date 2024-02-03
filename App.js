@@ -24,6 +24,9 @@ import MacDir from './MacDir';
 import { createContext, useContext, useState } from 'react';
 import { appContext } from './utils/app-context';
 import GraphicHistory from './GraphicHistory';
+import ValidateEmail from './ValidateEmail';
+import RecoveryEnterEmail from './RecoveryEnterEmail';
+import RecoveryValidateEmail from './RecoveryValidateEmail';
 //import MacDir from './MacDir';
 
 const Stack = createNativeStackNavigator();
@@ -68,6 +71,21 @@ export default function App() {
           <Stack.Screen
             name='Signin'
             component={Signin}
+            options={{ headerTitle: (props) => <Logo {...props} />, headerStyle: { backgroundColor: '#1D6FB8' } }}
+          />
+          <Stack.Screen
+            name='ValidateEmail'
+            component={ValidateEmail}
+            options={{ headerTitle: (props) => <Logo {...props} />, headerStyle: { backgroundColor: '#1D6FB8' } }}
+          />
+          <Stack.Screen
+            name='RecoverEmail'
+            component={RecoveryEnterEmail}
+            options={{ headerTitle: (props) => <Logo {...props} />, headerStyle: { backgroundColor: '#1D6FB8' } }}
+          />
+          <Stack.Screen
+            name='RecoverValidateEmail'
+            component={RecoveryValidateEmail}
             options={{ headerTitle: (props) => <Logo {...props} />, headerStyle: { backgroundColor: '#1D6FB8' } }}
           />
           <Stack.Screen

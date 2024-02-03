@@ -158,6 +158,7 @@ class Login extends Component {
                         onSubmitEditing={this.handlerLogin}
                         placeholder='Contraseña (letras y números)'
                         autoCapitalize="none"
+                        secureTextEntry={true}
                         value={this.state.password}
                         onChangeText={this.validatePassword}
                         onFocus={() => this.setState({ passTouched: true })}
@@ -180,10 +181,11 @@ class Login extends Component {
                 <View style={globalStyle.centerContent}>
                     <Text style={[globalStyle.title, { paddingBottom: 25 }]}> ¿No tienes cuenta?</Text>
                     <Pressable onPress={() => this.props.navigation.navigate("Signin")} >
-                        <Text>Registrate aquí</Text>
+                        <Text style={[{color: '#0000EE' }]}>Registrate aquí</Text>
                     </Pressable>
-                    <Pressable onPress={() => this.props.navigation.navigate("PassRecovery")} style={{ marginTop: 15 }} >
+                    <Pressable onPress={() => this.props.navigation.navigate("RecoverEmail")} style={{ marginTop: 15 }} >
                         <Text style={globalStyle.title} >¿Olvisate tu contraseña?</Text>
+                        <Text style={[{color: '#0000EE' }]}>Recupera el acceso a tu cuenta aquí</Text>
                     </Pressable>
                 </View>
 

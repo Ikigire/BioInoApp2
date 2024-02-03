@@ -11,6 +11,7 @@ import { getDispositivosByEstablecimientoUsuario, getDispositivosUsuario } from 
 import SmallDeviceView from "./components/SmallDeviceView";
 import { useAppContext } from "./utils/app-context";
 import { getSectionDataFromDispositivos } from "./utils/devices.utils";
+import { gStyles } from "./GlobalStyles";
 
 
 const s = require("./Styles")
@@ -242,7 +243,7 @@ function Home({ navigation }) {
                                     </View>
                                     <View style={{ width: '100%', height: '92%', overflow: 'hidden' }}>
                                         <SectionList
-                                            style={{ marginVertical: 8  }}
+                                            style={{ marginVertical: 8 }}
                                             sections={getSectionDataFromDispositivos(dispositivos)}
                                             keyExtractor={(device, index) => `${device.grupo}-${index}`}
                                             renderSectionHeader={({ section: { title } }) => (
@@ -257,13 +258,14 @@ function Home({ navigation }) {
                                 </View>
                             ) :
                             (
-                                <View style={s.container}>
+                                <View style={gStyles.container}>
                                     <Text style={{ fontSize: 32, fontVariant: 'bold' }}>!Bienvenido¡</Text>
                                     <Text style={{ fontSize: 20 }}>Tal parece que eres nuevo por aquí!</Text>
-                                    <Pressable style={s.buttonContainer}
+                                    
+                                    <Pressable style={[{ margin: 15, width: '90%' }]}
                                         onPress={() => navigation.navigate("Electric")}
                                     >
-                                        <Text style={s.button}>Añadir dispositivo</Text>
+                                        <Text style={[gStyles.button]}>Añadir Dispositivo</Text>
                                     </Pressable>
                                 </View>
                             )

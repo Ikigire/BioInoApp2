@@ -247,7 +247,7 @@ const GraphicHistory = ({ route, navigation }) => {
     // }, [data])
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
             <Dropdown
                 mode="modal"
                 style={[styles.dropdown, isFocus && { borderColor: 'blue' }, { minWidth: '50%' }]}
@@ -270,7 +270,7 @@ const GraphicHistory = ({ route, navigation }) => {
                     setLoading(true)
                 }}
             />
-            <ScrollView style={[{marginVertical: 5, paddingHorizontal: 10, height: 'calc'}]}>
+            <ScrollView style={[{ marginVertical: 5, paddingHorizontal: 10, height: 'calc' }]}>
 
                 {
                     loading ?
@@ -283,80 +283,88 @@ const GraphicHistory = ({ route, navigation }) => {
                             <>
                                 {
                                     data ?
-                                    <>
-                                        {/* <ScrollView style={[{ marginTop: 5, paddingHorizontal: 10 }]}> */}
-                                            {/* <View> */}
+                                        <>
+                                            {/* <ScrollView style={[{ marginTop: 5, paddingHorizontal: 10 }]}> */}
+                                            <View>
                                                 <Text style={[styles.titulo]}>Datos de Temperatura</Text>
-                                                <LineChart
-                                                    data={getTemperatureGraphicData()}
-                                                    width={Dimensions.get("window").width - 20}
-                                                    height={220}
-                                                    yAxisLabel=""
-                                                    yAxisSuffix="°"
-                                                    chartConfig={{
-                                                        backgroundColor: "#1D6FB8",
-                                                        backgroundGradientFrom: "#1D6FB8",
-                                                        backgroundGradientTo: "#ffa726",
-                                                        decimalPlaces: 2, // optional, defaults to 2dp
-                                                        color: () => `rgba(255, 255, 255, ${1})`,
-                                                        labelColor: () => `rgba(255, 255, 255, ${1})`,
-                                                        scrollableDotStrokeColor: '#1D6FB8',
-                                                        useShadowColorFromDataset: true,
-                                                        style: {
+                                                <ScrollView horizontal>
+                                                    <LineChart
+                                                        data={getTemperatureGraphicData()}
+                                                        width={Dimensions.get("window").width * 3}
+                                                        height={220}
+                                                        yAxisLabel=""
+                                                        yAxisSuffix="°"
+                                                        chartConfig={{
+                                                            backgroundColor: "#1D6FB8",
+                                                            backgroundGradientFrom: "#1D6FB8",
+                                                            backgroundGradientTo: "#3620F7",
+                                                            // backgroundGradientTo: "#ffa726",
+                                                            decimalPlaces: 2, // optional, defaults to 2dp
+                                                            color: () => `rgba(255, 255, 255, ${1})`,
+                                                            labelColor: () => `rgba(255, 255, 255, ${1})`,
+                                                            scrollableDotStrokeColor: '#1D6FB8',
+                                                            useShadowColorFromDataset: true,
+                                                            style: {
+                                                                borderRadius: 16
+                                                            },
+                                                            propsForDots: {
+                                                                r: "6",
+                                                                strokeWidth: "2",
+                                                                stroke: "#ffa726"
+                                                            }
+                                                        }}
+                                                        bezier
+                                                        style={{
+                                                            marginVertical: 8,
                                                             borderRadius: 16
-                                                        },
-                                                        propsForDots: {
-                                                            r: "6",
-                                                            strokeWidth: "2",
-                                                            stroke: "#ffa726"
-                                                        }
-                                                    }}
-                                                    style={{
-                                                        marginVertical: 8,
-                                                        borderRadius: 16
-                                                    }}
-                                                />
+                                                        }}
+                                                    />
+
+                                                </ScrollView>
                                                 <Text>Temperatura media: {data.median.temp}°</Text>
                                                 <Text>Temperatura moda: {data.mode.temp}°</Text>
                                                 <Text>Temperatura promedio: {data.mean.temp}°</Text>
-                                            {/* </View>
-                                            <View> */}
+                                            </View>
+                                            <View>
                                                 <Text style={[styles.titulo]}>Datos de Humedad</Text>
-                                                <LineChart
-                                                    data={getHumidityGraphicData()}
-                                                    width={Dimensions.get("window").width - 20}
-                                                    height={220}
-                                                    yAxisLabel=""
-                                                    yAxisSuffix=""
-                                                    chartConfig={{
-                                                        backgroundColor: "#1D6FB8",
-                                                        backgroundGradientFrom: "#1D6FB8",
-                                                        backgroundGradientTo: "#ffa726",
-                                                        decimalPlaces: 2, // optional, defaults to 2dp
-                                                        color: () => `rgba(255, 255, 255, ${1})`,
-                                                        labelColor: () => `rgba(255, 255, 255, ${1})`,
-                                                        scrollableDotStrokeColor: '#1D6FB8',
-                                                        useShadowColorFromDataset: true,
-                                                        style: {
+                                                <ScrollView horizontal>
+                                                    <LineChart
+                                                        data={getHumidityGraphicData()}
+                                                        width={Dimensions.get("window").width * 3}
+                                                        height={220}
+                                                        yAxisLabel=""
+                                                        yAxisSuffix=""
+                                                        chartConfig={{
+                                                            backgroundColor: "#1D6FB8",
+                                                            backgroundGradientFrom: "#1D6FB8",
+                                                            backgroundGradientTo: "#3620F7",
+                                                            // backgroundGradientTo: "#ffa726",
+                                                            decimalPlaces: 2, // optional, defaults to 2dp
+                                                            color: () => `rgba(255, 255, 255, ${1})`,
+                                                            labelColor: () => `rgba(255, 255, 255, ${1})`,
+                                                            scrollableDotStrokeColor: '#1D6FB8',
+                                                            useShadowColorFromDataset: true,
+                                                            style: {
+                                                                borderRadius: 16
+                                                            },
+                                                            propsForDots: {
+                                                                r: "6",
+                                                                strokeWidth: "2",
+                                                                stroke: "#ffa726"
+                                                            }
+                                                        }}
+                                                        style={{
+                                                            marginVertical: 8,
                                                             borderRadius: 16
-                                                        },
-                                                        propsForDots: {
-                                                            r: "6",
-                                                            strokeWidth: "2",
-                                                            stroke: "#ffa726"
-                                                        }
-                                                    }}
-                                                    style={{
-                                                        marginVertical: 8,
-                                                        borderRadius: 16
-                                                    }}
-                                                />
+                                                        }}
+                                                    />
+                                                </ScrollView>
                                                 <Text>Humedad media: {data.median.humidity}</Text>
                                                 <Text>Humedad moda: {data.mode.humidity}</Text>
                                                 <Text>Humedad promedio: {data.mean.humidity}</Text>
-                                            {/* </View> */}
-                                        {/* </ScrollView> */}
-                                    </>
+                                            </View>
+                                            {/* </ScrollView> */}
+                                        </>
                                         :
                                         <>
                                             <Text style={[{ textAlign: 'center', width: '90%', marginTop: 35, fontSize: 20 }]}>
