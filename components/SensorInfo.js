@@ -234,7 +234,7 @@ const SensorInfo = ({ mac,
                                         <View style={[estilo.sensorInfoContainer]}>
                                             {/* <MaterialCommunityIcons name='temperature-celsius' size={30} /> */}
                                             <Text style={{ fontSize: 25, fontWeight: 'bold' }}>T: </Text>
-                                            <Text style={estilo.sensorTempValue(deviceSensor.t)}>{roundNumber(deviceSensor.t)}<Text style={{ fontSize: 22 }}>°</Text></Text>
+                                            <Text style={estilo.sensorTempValue(deviceSensor.t)}>{roundNumber(deviceSensor.t)}<Text style={{ fontSize: 22 }}>°C</Text></Text>
                                         </View>
                                     </>
                                 ) :

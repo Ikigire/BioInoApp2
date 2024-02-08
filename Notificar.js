@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { gStyles } from './GlobalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { usuarioItemKey } from './utils/constantes';
+import { updateUsuario } from './services/usuario.service';
+import FlashMessage from 'react-native-flash-message';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,23 +45,87 @@ const styles = StyleSheet.create({
   toggleSwitch: {
     transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }], // Aumentamos el tamaño del toggle
   },
+  disabled: (disabled = false) => ({
+    backgroundColor: !disabled ? '#1D6FB8' : '#494949'
+  })
 });
 
 const Notificar = () => {
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
-  const [areAlarmsEnabled, setAreAlarmsEnabled] = useState(false);
+  // const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
+  // const [areAlarmsEnabled, setAreAlarmsEnabled] = useState(false);
+  const [usuario, setUsuario] = useState({});
+  const [nombreUsuario, setnombreUsuario] = useState("Jonh Doe");
+  const [disa, setDisa] = useState(false);
+  const [nombreOriginal, setNombreOriginal] = useState("")
 
-  const handleToggleNotification = () => {
-    setIsNotificationEnabled(!isNotificationEnabled);
-  };
 
-  const handleToggleAlarms = () => {
-    setAreAlarmsEnabled(!areAlarmsEnabled);
-  };
+  // const handleToggleNotification = () => {
+  //   setIsNotificationEnabled(!isNotificationEnabled);
+  // };
+
+  // const handleToggleAlarms = () => {
+  //   setAreAlarmsEnabled(!areAlarmsEnabled);
+  // };
+
+  const handleGuardarCambios = () => {
+    let {createdAt, updatedAt, ...user} = usuario;
+    user.nombre = nombreUsuario.trim();
+
+    updateUsuario(user)
+      .then(async resp => {
+        if (resp.status != 200) {
+          const {message} = await resp.json();
+          throw new Error(`Algo salió mal: ${message}`);
+        }
+
+        user = await resp.json();
+        setUsuario(user);
+        setNombreOriginal(user.nombre)
+
+        AsyncStorage.setItem(usuarioItemKey, JSON.stringify(user));
+        this.flashMessage.showMessage({
+          message: "Los cambios se guardaron correctamente",
+          type: 'success',
+          icon: 'success',
+          duration: 5000
+        })
+      })
+      .catch(error => {
+        this.flashMessage.showMessage({
+          message: "No fue posible guardar la información.\nIntente más tarde",
+          type: 'danger',
+          icon: 'danger',
+          duration: 5000
+        })
+      })
+  }
+
+  useEffect(() => {
+    AsyncStorage.getItem(usuarioItemKey)
+      .then(value => {
+        const { nombre } = JSON.parse(value);
+        setUsuario(JSON.parse(value))
+        setNombreOriginal(nombre);
+        setnombreUsuario(nombre);
+      })
+      .catch(error => {
+        console.log(error);
+        Alert.alert("Ocurrió un error", error.message);
+      });
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.setFontSizeOne}>
+    <>
+      <View style={styles.container}>
+        <Text style={[gStyles.title]}>Información de la cuenta</Text>
+        <Text style={{ fontSize: 12, marginTop: 40, marginBottom: -20 }}>Nombre Usuario:</Text>
+        <TextInput
+          style={gStyles.input}
+          placeholder='Nombre de usuario'
+          value={nombreUsuario}
+          onChangeText={text => setnombreUsuario(text)}
+        />
+        {/* <View style={styles.setFontSizeOne}>
         <Text style={styles.toggleText}>
           {isNotificationEnabled ? 'Habilitar\nNotificaciones' : 'Deshabilitar\nNotificaciones'}
         </Text>
@@ -79,8 +148,13 @@ const Notificar = () => {
             style={styles.toggleSwitch} // Agregamos el estilo para el tamaño del toggle
           />
         </View>
+      </View> */}
       </View>
-    </View>
+      <TouchableOpacity style={[{ width: '100%' }]} disabled={nombreOriginal == nombreUsuario} onPress={handleGuardarCambios}>
+        <Text style={[gStyles.button, styles.disabled(nombreOriginal == nombreUsuario)]}>Guardar cambios</Text>
+      </TouchableOpacity>
+      <FlashMessage ref={ref => this.flashMessage = ref} position={'top'} />
+    </>
   );
 };
 

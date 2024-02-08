@@ -156,5 +156,10 @@ export const gStyles = StyleSheet.create({
         fontSize: 22,
         fontWeight: '800',
         color: '#1D6FB8'
+    },
+    link: {
+        fontSize: 12,
+        fontWeight: '800',
+        color: '#0000EE'
     }
 })

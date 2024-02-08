@@ -70,7 +70,8 @@ function History({ navigation }) {
                                 <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
                             )}
                             renderItem={({ item }) => (
-                                <Device device={item} navigation={navigation} connect={false} destination='Histo' />
+                                // <Device device={item} navigation={navigation} connect={false} destination='Histo' />
+                                <Device device={item} navigation={navigation} connect={false} destination='graphics' />
                                 
                                 // <SmallDeviceView device={item} />
                                 // <Text>{item.nombreDispositivo}</Text>

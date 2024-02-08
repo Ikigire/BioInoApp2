@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable, ScrollView, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, Image, Pressable, ScrollView, FlatList, ActivityIndicator, SectionList } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './Styles';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { usuarioItemKey } from './utils/constantes';
 import { getDispositivosUsuario } from './services/dispositivo.service';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import Device from './components/Device';
+import { getSectionDataFromDispositivos } from './utils/devices.utils';
 
 const s = require("./Styles")
 
@@ -67,13 +68,25 @@ function Realtime({ navigation }) {
             {
                 isFocused && dispositivos.length > 0 ?
                     <>
-                        <FlatList
+                        <SectionList
+                            style={{ marginVertical: 8 }}
+                            sections={getSectionDataFromDispositivos(dispositivos)}
+                            keyExtractor={(device, index) => `${device.grupo}-${index}`}
+                            renderSectionHeader={({ section: { title } }) => (
+                                <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
+                            )}
+                            renderItem={({ item }) => (
+                                <Device device={item} navigation={navigation}/>
+                                // <Text>{item.nombreDispositivo}</Text>
+                            )}
+                        />
+                        {/* <FlatList
                             data={dispositivos}
                             keyExtractor={(device) => device.idDispositivo}
                             renderItem={({ item }) => (
                                 <Device device={item} navigation={navigation} />
                             )}
-                        />
+                        /> */}
                     </>
                     :
                     <>

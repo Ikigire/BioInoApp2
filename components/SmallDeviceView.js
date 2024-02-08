@@ -1,9 +1,10 @@
-import React from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { findDeviceIcon } from '../utils/icon.utils';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { deleteDispositivo } from '../services/dispositivo.service';
 import { useAppContext } from '../utils/app-context';
+import { getDispositivoSensoresInfo } from '../services/mqtt.service';
 
 
 const estilo = StyleSheet.create({
@@ -30,10 +31,25 @@ const estilo = StyleSheet.create({
     },
     subTitle: {
         fontSize: 16
+    },
+    sensorInfoContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 });
 
-const SmallDeviceView = ({ device }) => {
+const roundNumber = (number) => {
+    number = parseFloat(number);
+    if ((number - parseInt(number)) > 0.5) {
+        number = Math.ceil(number);
+    } else {
+        number = Math.floor(number);
+    }
+    return number;
+}
+
+const SmallDeviceView = ({ device, navigation }) => {
     if (!device) {
         return (
             <Text style={{ width: '100%', height: 80, fontSize: 14, textAlign: 'center' }}>
@@ -41,6 +57,8 @@ const SmallDeviceView = ({ device }) => {
             </Text>
         );
     }
+
+    const [deviceSensor, setDeviceSensor] = useState(undefined);
 
     const { setUpdateEstList } = useAppContext();
 
@@ -71,21 +89,72 @@ const SmallDeviceView = ({ device }) => {
         )
     }
 
+    useEffect(() => {
+        getDispositivoSensoresInfo(device.idDispositivo)
+            .then(async resp => {
+                if (resp.status != 200) {
+                    const { message } = await (resp.json());
+                    throw new Error(message);
+                }
+                const data = await resp.json();
+                setDeviceSensor(data);
+            })
+            .catch(error => {
+                setDeviceSensor(null);
+            });
+    }, [])
+
+    const handlePress = () => {
+        if (!navigation)
+            return
+
+        navigation.navigate('Mqtt', { mac: device.idDispositivo });
+    }
+
     const icon = findDeviceIcon(device.establecimiento, device.grupo);
+
     return (
-        <View style={estilo.container}>
+        <Pressable
+            onPress={handlePress}
+            style={estilo.container}
+        >
             {
                 icon ?
-                <MaterialCommunityIcons name={icon} size={35} color={'#1D6FB8'} />
-                :
-                <></>
+                    <MaterialCommunityIcons name={icon} size={35} color={'#1D6FB8'} />
+                    :
+                    <></>
             }
             <View style={estilo.textContainer}>
                 <Text style={estilo.title}>{device.nombreDispositivo}</Text>
-                <Text style={estilo.subTitle}>{device.idDispositivo}</Text>
+                {/* <Text style={estilo.subTitle}>{device.idDispositivo}</Text> */}
+                <View>
+                    {
+                        !deviceSensor ?
+                            <>
+                                <Text>{device.idDispositivo}</Text>
+                            </>
+                            :
+                            <>
+
+                                <View style={[{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }]}>
+                                    <View style={[estilo.sensorInfoContainer]}>
+                                        {/* <MaterialCommunityIcons name='air-humidifier' size={30} /> */}
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>H: </Text>
+                                        <Text>{roundNumber(deviceSensor.h)}%</Text>
+                                    </View>
+                                    <View style={[estilo.sensorInfoContainer]}>
+                                        {/* <MaterialCommunityIcons name='temperature-celsius' size={30} /> */}
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>T: </Text>
+                                        <Text>{roundNumber(deviceSensor.t)}<Text style={{ fontSize: 22 }}>°</Text>C</Text>
+                                    </View>
+                                </View>
+                            </>
+
+                    }
+                </View>
             </View>
             <MaterialCommunityIcons color={'red'} name='trash-can-outline' size={20} onPress={handleTrashIconPress} />
-        </View>
+        </Pressable>
     )
 }
 

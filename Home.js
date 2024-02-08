@@ -126,30 +126,6 @@ function Home({ navigation }) {
         getSectionDataFromDispositivos();
     }
 
-    // const getSectionDataFromDispositivos = () => {
-    //     const sections = [];
-    //     dispositivos.forEach((device) => {
-    //         let added = false;
-
-    //         sections.forEach(section => {
-    //             if (section.title == device.establecimiento) {
-    //                 added = true;
-    //                 section.data = [...section.data, device];
-    //             }
-    //         })
-
-    //         if (!added) {
-    //             sections.push({
-    //                 title: device.establecimiento,
-    //                 data: [device]
-    //             });
-    //         }
-    //     });
-
-    //     // console.log(sections);
-    //     return sections;
-    // }
-
     const getDispositivosByUserId = (id) => {
         getDispositivosUsuario(id)
             .then(async resp => {
@@ -200,15 +176,6 @@ function Home({ navigation }) {
         }
     }, [updateEstList]);
 
-    // useEffect(() => updateData());
-
-    // useEffect(() => {
-    //     if (selectedEstab) {
-    //         setLoadingDevices(true);
-    //         getDispositivosByEstab(selectedEstab);
-    //     }
-    // }, [selectedEstab])
-
     return (
         <>
             {
@@ -221,24 +188,6 @@ function Home({ navigation }) {
                             (
                                 <View style={{ flex: 1 }}>
                                     <View style={{ width: '100%', padding: 12, backgroundColor: '#1D6FB8', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-                                        {/* <Text style={{ color: '#fff', fontSize: 18 }}>Establecimiento: </Text> */}
-                                        {/* <Dropdown
-                                            mode="modal"
-                                            data={establecimientos}
-                                            style={[styles.dropdown, { minWidth: '75%' }]}
-                                            placeholderStyle={styles.placeholderStyle}
-                                            selectedTextStyle={styles.selectedTextStyle}
-                                            value={selectedEstab}
-                                            iconStyle={styles.iconStyle}
-                                            labelField="establecimiento"
-                                            valueField="establecimiento"
-                                            placeholder={'Establecimiento'}
-                                            searchPlaceholder="Search..."
-                                            onChange={(item) => {
-                                                const { establecimiento } = item;
-                                                setSelectedEstab(establecimiento);
-                                            }}
-                                        /> */}
                                         <MaterialCommunityIcons style={{ color: '#fff' }} name="toy-brick-plus-outline" size={30} onPress={() => navigation.navigate("Electric")} />
                                     </View>
                                     <View style={{ width: '100%', height: '92%', overflow: 'hidden' }}>
@@ -250,7 +199,7 @@ function Home({ navigation }) {
                                                 <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
                                             )}
                                             renderItem={({ item }) => (
-                                                <SmallDeviceView device={item} />
+                                                <SmallDeviceView device={item} navigation={navigation}/>
                                                 // <Text>{item.nombreDispositivo}</Text>
                                             )}
                                         />
@@ -261,7 +210,7 @@ function Home({ navigation }) {
                                 <View style={gStyles.container}>
                                     <Text style={{ fontSize: 32, fontVariant: 'bold' }}>!Bienvenido¡</Text>
                                     <Text style={{ fontSize: 20 }}>Tal parece que eres nuevo por aquí!</Text>
-                                    
+
                                     <Pressable style={[{ margin: 15, width: '90%' }]}
                                         onPress={() => navigation.navigate("Electric")}
                                     >
@@ -271,50 +220,6 @@ function Home({ navigation }) {
                             )
                     )
             }
-            {/*
-                establecimientos.length > 0 ?
-                    (
-                        <View style={{ flex: 1 }}>
-                            <View style={{ width: '100%', padding: 12, backgroundColor: '#1D6FB8', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-                                <MaterialCommunityIcons style={{ color: '#fff' }} name="toy-brick-plus-outline" size={30} onPress={() => navigation.navigate("Electric")} />
-                            </View>
-                            <View style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-
-                                {
-                                    loadingDevices ?
-                                        (
-                                            <ActivityIndicator size={'large'} />
-                                        ) :
-                                        (
-                                            <SectionList
-                                                style={{ marginTop: 8 }}
-                                                sections={getSectionDataFromDispositivos()}
-                                                keyExtractor={(device, index) => `${device.grupo}-${index}`}
-                                                renderSectionHeader={({ section: { title } }) => (
-                                                    <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
-                                                )}
-                                                renderItem={({ item }) => (
-                                                    <SmallDeviceView device={item} />
-                                                    // <Text>{item.nombreDispositivo}</Text>
-                                                )}
-                                            />
-                                        )
-                                }
-                            </View>
-                        </View>
-                    ) :
-                    (
-                        <View style={s.container}>
-                            <Text style={{ fontSize: 32, fontVariant: 'bold' }}>!Bienvenido¡</Text>
-                            <Text style={{ fontSize: 20 }}>Tal parece que eres nuevo por aquí!</Text>
-                            <Pressable style={s.buttonContainer}
-                                onPress={() => navigation.navigate("Electric")}
-                            >
-                                <Text style={s.button}>Añadir dispositivo</Text>
-                            </Pressable>
-                        </View>
-                    )
-            */}
             <FlashMessage ref={(fm) => this.flashMessage = fm} position={'top'} />
         </>
     );
