@@ -29,7 +29,7 @@ const Device = ({ device, navigation, showSensorInfo = false, interval = 8000, n
                 break;
             
             case "graphics":
-                navigation.navigate(destination, {mac: device.idDispositivo})
+                navigation.navigate(destination, {mac: device.idDispositivo, device})
                 break;
         
             default:

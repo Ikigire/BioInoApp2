@@ -64,7 +64,10 @@ const styles = StyleSheet.create({
 });
 
 const GraphicHistory = ({ route, navigation }) => {
-    const { mac } = route.params;
+    const { mac, device: { sensores } } = route.params;
+    const tipoSensores = sensores.map(sensor => String(sensor.tipo).toLowerCase());
+    console.info("Dispositivo para el historico", tipoSensores);
+
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -420,159 +423,189 @@ const GraphicHistory = ({ route, navigation }) => {
                         period ?
                             data ?
                                 <>
-                                    
-                                    <View>
-                                        <Text style={styles.titulo}>Temperatura</Text>
-                                        <ScrollView horizontal>
-                                            <LineChart
-                                                data={getTemperatureGraphicData()}
-                                                width={Dimensions.get("window").width * 3}
-                                                height={220}
-                                                yAxisLabel=""
-                                                yAxisSuffix="°"
-                                                chartConfig={{
-                                                    backgroundColor: "#e8e8e8",
-                                                    backgroundGradientFrom: "#e8e8e8",
-                                                    backgroundGradientTo: "#e8e8e8",
-                                                    decimalPlaces: 2,
-                                                    color: () => `rgba(0, 0, 0, 1)`,
-                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
-                                                    scrollableDotStrokeColor: '#1D6FB8',
-                                                    useShadowColorFromDataset: true,
-                                                    style: {
-                                                        borderRadius: 16
-                                                    },
-                                                    propsForDots: {
-                                                        r: "6",
-                                                        strokeWidth: "2",
-                                                        stroke: "#ffa726"
-                                                    }
-                                                }}
-                                                bezier
-                                                style={{
-                                                    marginVertical: 8,
-                                                    borderRadius: 16
-                                                }}
-                                            />
-                                        </ScrollView>
-                                        <Text>Mediana: {data.median.temp}°C</Text>
-                                        <Text>Moda: {data.mode.temp}°C</Text>
-                                        <Text>Promedio: {data.mean.temp}°C</Text>
-                                    </View>
-                                    <View style={styles.graphicContainer}>
-                                        <View style={styles.separador}></View>
-                                        <Text style={styles.titulo}>Humedad</Text>
-                                        <ScrollView horizontal>
-                                            <LineChart
-                                                data={getHumidityGraphicData()}
-                                                width={Dimensions.get("window").width * 3}
-                                                height={220}
-                                                yAxisLabel=""
-                                                yAxisSuffix="%"
-                                                chartConfig={{
-                                                    backgroundColor: "#e8e8e8",
-                                                    backgroundGradientFrom: "#e8e8e8",
-                                                    backgroundGradientTo: "#e8e8e8",
-                                                    decimalPlaces: 2,
-                                                    color: () => `rgba(0, 0, 0, 1)`,
-                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
-                                                    scrollableDotStrokeColor: '#1D6FB8',
-                                                    useShadowColorFromDataset: true,
-                                                    style: {
-                                                        borderRadius: 16
-                                                    },
-                                                    propsForDots: {
-                                                        r: "6",
-                                                        strokeWidth: "2",
-                                                        stroke: "#ffa726"
-                                                    }
-                                                }}
-                                                style={{
-                                                    marginVertical: 8,
-                                                    borderRadius: 16
-                                                }}
-                                            />
-                                        </ScrollView>
-                                        <Text>Mediana: {data.median.humidity}%</Text>
-                                        <Text>Moda: {data.mode.humidity}%</Text>
-                                        <Text>Promedio: {data.mean.humidity}%</Text>
-                                    </View>
-                                    <View style={styles.graphicContainer}>
-                                        <View style={styles.separador}></View>
-                                        <Text style={styles.titulo}>CO2</Text>
-                                        <ScrollView horizontal>
-                                            <LineChart
-                                                data={getCO2GraphicData()}
-                                                width={Dimensions.get("window").width * 3}
-                                                height={220}
-                                                yAxisLabel=""
-                                                yAxisSuffix=" PPM"
-                                                chartConfig={{
-                                                    backgroundColor: "#e8e8e8",
-                                                    backgroundGradientFrom: "#e8e8e8",
-                                                    backgroundGradientTo: "#e8e8e8",
-                                                    decimalPlaces: 2,
-                                                    color: () => `rgba(0, 0, 0, 1)`,
-                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
-                                                    scrollableDotStrokeColor: '#1D6FB8',
-                                                    useShadowColorFromDataset: true,
-                                                    style: {
-                                                        borderRadius: 16
-                                                    },
-                                                    propsForDots: {
-                                                        r: "6",
-                                                        strokeWidth: "2",
-                                                        stroke: "#ffa726"
-                                                    }
-                                                }}
-                                                style={{
-                                                    marginVertical: 8,
-                                                    borderRadius: 16
-                                                }}
-                                            />
-                                        </ScrollView>
-                                        <Text>Mediana: {data.median.co2} PPM</Text>
-                                        <Text>Moda: {data.mode.co2} PPM</Text>
-                                        <Text>Promedio: {data.mean.co2} PPM</Text>
-                                    </View>
-                                    <View style={styles.graphicContainer}>
-                                        <View style={styles.separador}></View>
-                                        <Text style={styles.titulo}>VOC</Text>
-                                        <ScrollView horizontal>
-                                            <LineChart
-                                                data={getVOCGraphicData()}
-                                                width={Dimensions.get("window").width * 3}
-                                                height={220}
-                                                yAxisLabel=""
-                                                yAxisSuffix=" PPB"
-                                                chartConfig={{
-                                                    backgroundColor: "#e8e8e8",
-                                                    backgroundGradientFrom: "#e8e8e8",
-                                                    backgroundGradientTo: "#e8e8e8",
-                                                    decimalPlaces: 2,
-                                                    color: () => `rgba(0, 0, 0, 1)`,
-                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
-                                                    scrollableDotStrokeColor: '#1D6FB8',
-                                                    useShadowColorFromDataset: true,
-                                                    style: {
-                                                        borderRadius: 16
-                                                    },
-                                                    propsForDots: {
-                                                        r: "6",
-                                                        strokeWidth: "2",
-                                                        stroke: "#ffa726"
-                                                    }
-                                                }}
-                                                style={{
-                                                    marginVertical: 8,
-                                                    borderRadius: 16
-                                                }}
-                                            />
-                                        </ScrollView>
-                                        <Text>Mediana: {data.median.voc} PPB</Text>
-                                        <Text>Moda: {data.mode.voc} PPB</Text>
-                                        <Text>Promedio: {data.mean.voc} PPB</Text>
-                                    </View>
+                                    {
+                                        tipoSensores.includes('t') ?
+                                            <>
+                                                <View>
+                                                    <Text style={styles.titulo}>Temperatura</Text>
+                                                    <ScrollView horizontal>
+                                                        <LineChart
+                                                            data={getTemperatureGraphicData()}
+                                                            width={Dimensions.get("window").width * 3}
+                                                            height={220}
+                                                            yAxisLabel=""
+                                                            yAxisSuffix="°"
+                                                            chartConfig={{
+                                                                backgroundColor: "#e8e8e8",
+                                                                backgroundGradientFrom: "#e8e8e8",
+                                                                backgroundGradientTo: "#e8e8e8",
+                                                                decimalPlaces: 2,
+                                                                color: () => `rgba(0, 0, 0, 1)`,
+                                                                labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                                scrollableDotStrokeColor: '#1D6FB8',
+                                                                useShadowColorFromDataset: true,
+                                                                style: {
+                                                                    borderRadius: 16
+                                                                },
+                                                                propsForDots: {
+                                                                    r: "6",
+                                                                    strokeWidth: "2",
+                                                                    stroke: "#ffa726"
+                                                                }
+                                                            }}
+                                                            bezier
+                                                            style={{
+                                                                marginVertical: 8,
+                                                                borderRadius: 16
+                                                            }}
+                                                        />
+                                                    </ScrollView>
+                                                    <Text>Mediana: {data.median.temp}°C</Text>
+                                                    <Text>Moda: {data.mode.temp}°C</Text>
+                                                    <Text>Promedio: {data.mean.temp}°C</Text>
+                                                </View>
+                                            </>
+                                            :
+                                            <></>
+                                    }
+
+                                    {
+                                        tipoSensores.includes('h') ?
+                                            <>
+                                                <View style={styles.graphicContainer}>
+                                                    <View style={styles.separador}></View>
+                                                    <Text style={styles.titulo}>Humedad</Text>
+                                                    <ScrollView horizontal>
+                                                        <LineChart
+                                                            data={getHumidityGraphicData()}
+                                                            width={Dimensions.get("window").width * 3}
+                                                            height={220}
+                                                            yAxisLabel=""
+                                                            yAxisSuffix="%"
+                                                            chartConfig={{
+                                                                backgroundColor: "#e8e8e8",
+                                                                backgroundGradientFrom: "#e8e8e8",
+                                                                backgroundGradientTo: "#e8e8e8",
+                                                                decimalPlaces: 2,
+                                                                color: () => `rgba(0, 0, 0, 1)`,
+                                                                labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                                scrollableDotStrokeColor: '#1D6FB8',
+                                                                useShadowColorFromDataset: true,
+                                                                style: {
+                                                                    borderRadius: 16
+                                                                },
+                                                                propsForDots: {
+                                                                    r: "6",
+                                                                    strokeWidth: "2",
+                                                                    stroke: "#ffa726"
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                marginVertical: 8,
+                                                                borderRadius: 16
+                                                            }}
+                                                        />
+                                                    </ScrollView>
+                                                    <Text>Mediana: {data.median.humidity}%</Text>
+                                                    <Text>Moda: {data.mode.humidity}%</Text>
+                                                    <Text>Promedio: {data.mean.humidity}%</Text>
+                                                </View>
+                                            </>
+                                            :
+                                            <></>
+                                    }
+
+                                    {
+                                        tipoSensores.includes('c') ?
+                                            <>
+                                                <View style={styles.graphicContainer}>
+                                                    <View style={styles.separador}></View>
+                                                    <Text style={styles.titulo}>CO2</Text>
+                                                    <ScrollView horizontal>
+                                                        <LineChart
+                                                            data={getCO2GraphicData()}
+                                                            width={Dimensions.get("window").width * 3}
+                                                            height={220}
+                                                            yAxisLabel=""
+                                                            yAxisSuffix=" PPM"
+                                                            chartConfig={{
+                                                                backgroundColor: "#e8e8e8",
+                                                                backgroundGradientFrom: "#e8e8e8",
+                                                                backgroundGradientTo: "#e8e8e8",
+                                                                decimalPlaces: 2,
+                                                                color: () => `rgba(0, 0, 0, 1)`,
+                                                                labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                                scrollableDotStrokeColor: '#1D6FB8',
+                                                                useShadowColorFromDataset: true,
+                                                                style: {
+                                                                    borderRadius: 16
+                                                                },
+                                                                propsForDots: {
+                                                                    r: "6",
+                                                                    strokeWidth: "2",
+                                                                    stroke: "#ffa726"
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                marginVertical: 8,
+                                                                borderRadius: 16
+                                                            }}
+                                                        />
+                                                    </ScrollView>
+                                                    <Text>Mediana: {data.median.co2} PPM</Text>
+                                                    <Text>Moda: {data.mode.co2} PPM</Text>
+                                                    <Text>Promedio: {data.mean.co2} PPM</Text>
+                                                </View>
+                                            </>
+                                            :
+                                            <></>
+                                    }
+
+                                    {
+                                        tipoSensores.includes('v') ?
+                                            <>
+                                                <View style={styles.graphicContainer}>
+                                                    <View style={styles.separador}></View>
+                                                    <Text style={styles.titulo}>VOC</Text>
+                                                    <ScrollView horizontal>
+                                                        <LineChart
+                                                            data={getVOCGraphicData()}
+                                                            width={Dimensions.get("window").width * 3}
+                                                            height={220}
+                                                            yAxisLabel=""
+                                                            yAxisSuffix=" PPB"
+                                                            chartConfig={{
+                                                                backgroundColor: "#e8e8e8",
+                                                                backgroundGradientFrom: "#e8e8e8",
+                                                                backgroundGradientTo: "#e8e8e8",
+                                                                decimalPlaces: 2,
+                                                                color: () => `rgba(0, 0, 0, 1)`,
+                                                                labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                                scrollableDotStrokeColor: '#1D6FB8',
+                                                                useShadowColorFromDataset: true,
+                                                                style: {
+                                                                    borderRadius: 16
+                                                                },
+                                                                propsForDots: {
+                                                                    r: "6",
+                                                                    strokeWidth: "2",
+                                                                    stroke: "#ffa726"
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                marginVertical: 8,
+                                                                borderRadius: 16
+                                                            }}
+                                                        />
+                                                    </ScrollView>
+                                                    <Text>Mediana: {data.median.voc} PPB</Text>
+                                                    <Text>Moda: {data.mode.voc} PPB</Text>
+                                                    <Text>Promedio: {data.mean.voc} PPB</Text>
+                                                </View>
+                                            </>
+                                            :
+                                            <></>
+                                    }
                                 </>
                                 :
                                 <Text style={{ textAlign: 'center', width: '90%', marginTop: 35, fontSize: 20 }}>
