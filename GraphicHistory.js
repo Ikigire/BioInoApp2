@@ -368,19 +368,21 @@ const GraphicHistory = ({ route, navigation }) => {
         getDeviceGraphicHistoricalData(mac, period)
             .then(async resp => {
                 console.log(resp.status);
-                setLoading(false);
-
+                
                 if (resp.status == 204) {
                     setData(null);
+                    setLoading(false);
                     return;
                 }
-
+                
                 if (resp.status != 200) {
                     setData(null)
+                    setLoading(false);
                     return;
                 }
-
+                
                 setData((await resp.json()));
+                setLoading(false);
             })
             .catch((error) => {
                 console.log(error);
