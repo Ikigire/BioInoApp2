@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity,TouchableWithoutFeedback,Keyboard} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 function ModificarUsuario() {
@@ -17,6 +17,7 @@ function ModificarUsuario() {
     };
   
     return (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View>
         {/* Campo de texto para cambiar el nombre */}
         <TextInput
@@ -29,7 +30,12 @@ function ModificarUsuario() {
         <TouchableOpacity onPress={handleGoBack}>
           <Text>Aceptar</Text>
         </TouchableOpacity>
-      </View>
+        <View style={{ minHeight: 70, width: '100%', backgroundColor: '#1d6fb8' }}>
+                </View>
+                <FlashMessage ref={(flashMessage) => this.flashMessage = flashMessage} position={'bottom'} animated />
+            </View>
+    </TouchableWithoutFeedback>
+      
     );
   }
   

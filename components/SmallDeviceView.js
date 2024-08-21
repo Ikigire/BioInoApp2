@@ -5,6 +5,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { deleteDispositivo } from '../services/dispositivo.service';
 import { useAppContext } from '../utils/app-context';
 import { getDispositivoSensoresInfo } from '../services/mqtt.service';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { usuarioItemKey } from "./../utils/constantes";
 
 
 const estilo = StyleSheet.create({
@@ -25,12 +27,11 @@ const estilo = StyleSheet.create({
         // overflow: 'hidden'
     },
     title: {
-        fontSize: 22,
+        fontSize: 20,
         // textAlign: 'center',
-        fontWeight: 'bold',
     },
     subTitle: {
-        fontSize: 16
+        fontSize: 14
     },
     sensorInfoContainer: {
         display: 'flex',
@@ -62,17 +63,25 @@ const SmallDeviceView = ({ device, navigation }) => {
 
     const { setUpdateEstList } = useAppContext();
 
-    const eliminarDispositivo = () => {
-        deleteDispositivo(device.idDispositivo)
-            .then(async resp => {
-                if (resp.status != 200) {
-                    console.error(await resp.json);
-                    return;
-                }
-
-                setUpdateEstList(true);
-            })
-            .catch(error => console.error(error));
+    const eliminarDispositivo = async () => {
+        try {
+            const usuario = await AsyncStorage.getItem(usuarioItemKey);
+    
+            const { idUsuario } = JSON.parse(usuario);
+            deleteDispositivo(device.idDispositivo, idUsuario)
+                .then(async resp => {
+                    if (resp.status != 200) {
+                        console.error(await resp.json);
+                        return;
+                    }
+    
+                    setUpdateEstList(true);
+                })
+                .catch(error => console.error(error));
+            
+        } catch (error) {
+            Alert.alert(error.message);
+        }
     }
 
     const handleTrashIconPress = () => {
@@ -120,18 +129,18 @@ const SmallDeviceView = ({ device, navigation }) => {
         >
             {
                 icon ?
-                    <MaterialCommunityIcons name={icon} size={35} color={'#1D6FB8'} />
+                    <MaterialCommunityIcons name={device.icon} size={35} color={'#1D6FB8'} />
                     :
                     <></>
             }
             <View style={estilo.textContainer}>
-                <Text style={estilo.title}>{device.nombreDispositivo}</Text>
+                <Text style={estilo.title}>{device.alias}</Text>
                 {/* <Text style={estilo.subTitle}>{device.idDispositivo}</Text> */}
                 <View>
                     {
                         !deviceSensor ?
                             <>
-                                <Text>{device.idDispositivo}</Text>
+                                <Text style={estilo.subTitle}>{device.idDispositivo}</Text>
                             </>
                             :
                             <>
@@ -153,7 +162,7 @@ const SmallDeviceView = ({ device, navigation }) => {
                     }
                 </View>
             </View>
-            <MaterialCommunityIcons color={'red'} name='trash-can-outline' size={20} onPress={handleTrashIconPress} />
+            <MaterialCommunityIcons color={'red'} name='trash-can-outline' size={27} onPress={handleTrashIconPress} />
         </Pressable>
     )
 }

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Pressable, TextInput, Keyboard, Animated } from "react-native";
+import { Text, View, StyleSheet, Pressable, TextInput, Keyboard, TouchableWithoutFeedback, Image, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import FlashMessage from "react-native-flash-message";
-import { baseUrl } from "./utils/constantes";
+import { baseUrl, prodUrl } from "./utils/constantes";
 import { createValidationCode } from "./services/email-validation.service";
-
 
 globalStyle = require("./Styles");
 
@@ -16,7 +15,8 @@ class Signin extends Component {
       email: "",
       password: "",
       confirmPassword: "",
-      registeredEmail: true
+      registeredEmail: true,
+      isButtonPressed: false,
     };
   }
 
@@ -31,14 +31,12 @@ class Signin extends Component {
       return;
     }
 
-    const url = `${baseUrl}/usuarios?fields=email`;
-    // console.log(url);
+    const url = `${prodUrl}/usuario?fields=email`;
 
     fetch(url)
       .then(resp => resp.json())
       .catch(error => console.log(error))
       .then(users => {
-        // console.log(users);
         let type = "success";
         let message = "Correo disponible";
         users.forEach(user => {
@@ -62,7 +60,7 @@ class Signin extends Component {
   }
 
   handleRegister = () => {
-    this.setState({ disabled: true });
+    this.setState({ disabled: true, isButtonPressed: false });
     Keyboard.dismiss();
 
     if (!this.state.username || !this.state.email || !this.state.password || !this.state.confirmPassword) {
@@ -125,147 +123,140 @@ class Signin extends Component {
           duration: 3000
         });
       }));
-
-    // console.log(newUser);
-
-    // const url = `${baseUrl}/usuarios`;
-    // fetch(url, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(newUser),
-    //   // body: newUser,
-    // })
-    //   .then((response) => response.json())
-    //   .then((resp) => {
-    //     if (resp.errorType ?? false) {
-    //       this.refs.myLocalFlashMessage.showMessage({
-    //         message: `Algo salió mal\n${resp.message}`,
-    //         type: "danger",
-    //         duration: 3000
-    //       });
-    //     this.setState({ disabled: false });
-
-    //       return
-    //     }
-    //     this.props.navigation.navigate("Login");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error al registrar el usuario:", error);
-    //     this.setState({ disabled: false });
-    //     this.refs.myLocalFlashMessage.showMessage({
-    //       message: `No fue posible registrar al usuario ${error}`,
-    //       type: 'danger'
-    //     })
-    //   });
-
-    // fetch(`http://3.133.59.124:4000/checkEmail/${this.state.email}`)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     if (data.emailExists) {
-    //       this.refs.myLocalFlashMessage.showMessage({
-    //         message: "El correo electrónico ya está en uso.",
-    //         type: "danger",
-    //       });
-
-    //       this.setState({ disabled: false });
-    //     } else {
-
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error al verificar el correo electrónico:", error);
-    //     this.setState({ disabled: false });
-    //   });
   };
 
   render() {
+    const buttonStyle = this.state.isButtonPressed
+      ? [styles.activeButton, styles.buttonPressed]
+      : styles.activeButton;
+
     return (
-      <View style={{ width: "100%", height: "100%", paddingHorizontal: 18 }}>
-        <TextInput
-          style={globalStyle.input}
-          placeholder="Nombre usuario"
-          autoCapitalize="words"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          onSubmitEditing={() => { this.emailInput.focus() }}
-          value={this.state.username}
-          onChangeText={(text) => this.setState({ username: text })}
-        />
-        <TextInput
-          ref={(input) => { this.emailInput = input }}
-          returnKeyType="next"
-          blurOnSubmit={false}
-          onSubmitEditing={() => { this.passwordInput.focus() }}
-          style={globalStyle.input}
-          placeholder="Correo"
-          keyboardType="email-address"
-          // autoCompleteType="email"
-          autoComplete="off"
-          autoCapitalize="none"
-          value={this.state.email}
-          onChangeText={this.checkEmail}
-        // onChangeText={(text) => this.setState({ email: text })}
-        />
-        <TextInput
-          ref={(input) => { this.passwordInput = input }}
-          returnKeyType="next"
-          blurOnSubmit={false}
-          onSubmitEditing={() => { this.passwordValidationInput.focus() }}
-          style={globalStyle.input}
-          placeholder="Contraseña (letras y números)"
-          autoCapitalize="none"
-          secureTextEntry={true}
-          value={this.state.password}
-          onChangeText={(text) => this.setState({ password: text })}
-        />
-        <TextInput
-          ref={(input) => { this.passwordValidationInput = input }}
-          returnKeyType="done"
-          blurOnSubmit={false}
-          onSubmitEditing={() => { this.handleRegister(); }}
-          style={globalStyle.input}
-          placeholder="Confirmar contraseña"
-          autoCapitalize="none"
-          secureTextEntry={true}
-          value={this.state.confirmPassword}
-          onChangeText={(text) => this.setState({ confirmPassword: text })}
-        />
-
-        {/* <Button
-          style={{ ...styles.activeButton, color: '#fff', }}
-          onPress={this.handleRegister}
-          disabled={this.state.disabled}
-          ref={button => { this.registrarButton = button; }}
-        >
-          Registrar
-        </Button> */}
-
-        <View style={{ paddingTop: 15, marginBottom: 5 }}>
-          <Pressable onPress={this.handleRegister} disabled={this.state.disabled} >
-            <Text style={styles.activeButton}>Registrar</Text>
-          </Pressable>
-        </View>
-
-        {/* Componente FlashMessage para mostrar notificaciones */}
-        <FlashMessage ref={(ref) => this.myLocalFlashMessage = ref} position="bottom" />
-      </View>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <View style={{ width: "100%", height: "100%", paddingHorizontal: 40, paddingTop: 30, backgroundColor: '#fff' }}>
+              <View style={[globalStyle.centerContent]}>
+                <View style={{ width: 200, height: 200, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                  <Image
+                    source={require('./assets/logo_OP2_2.png')}
+                    style={{ flex: 8, width: 200, height: 150, resizeMode: 'contain' }}
+                  />
+                </View>
+                <Text style={{ textAlign: 'left', fontSize: 15, paddingEnd: 150 }}>Nombre completo</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Juan Pérez"
+                  autoCapitalize="words"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.emailInput.focus() }}
+                  value={this.state.username}
+                  onChangeText={(text) => this.setState({ username: text })}
+                  marginBottom={20} // Incrementa este valor para aumentar la separación
+                />
+                <Text style={{ textAlign: 'left', fontSize: 15, paddingEnd: 150 }}>Correo electrónico</Text>
+                <TextInput
+                  ref={(input) => { this.emailInput = input }}
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.passwordInput.focus() }}
+                  style={styles.input}
+                  placeholder="usuario@mail.com"
+                  keyboardType="email-address"
+                  autoCompleteType="email"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  value={this.state.email}
+                  onChangeText={this.checkEmail}
+                  onBlur={() => this.checkEmail(this.state.email)}
+                  marginBottom={20} // Incrementa este valor para aumentar la separación
+                />
+                <Text style={{ textAlign: 'left', fontSize: 15, paddingEnd: 200 }}>Contraseña</Text>
+                <TextInput
+                  ref={(input) => { this.passwordInput = input }}
+                  returnKeyType="next"
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.passwordValidationInput.focus() }}
+                  style={styles.input}
+                  placeholder="contraseña"
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                  value={this.state.password}
+                  onChangeText={(text) => this.setState({ password: text })}
+                  marginBottom={10} // Incrementa este valor para aumentar la separación
+                />
+                <TextInput
+                  ref={(input) => { this.passwordValidationInput = input }}
+                  returnKeyType="done"
+                  blurOnSubmit={false}
+                  onSubmitEditing={this.handleRegister}
+                  style={styles.input}
+                  placeholder="confirmar contraseña"
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                  value={this.state.confirmPassword}
+                  onChangeText={(text) => this.setState({ confirmPassword: text })}
+                  marginBottom={20} // Incrementa este valor para aumentar la separación
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Pressable
+                  style={buttonStyle}
+                  onPressIn={() => this.setState({ isButtonPressed: true })}
+                  onPressOut={() => this.setState({ isButtonPressed: false })}
+                  onPress={this.handleRegister}
+                  disabled={this.state.disabled}
+                >
+                  <Text style={styles.buttonText}>Registrar</Text>
+                </Pressable>
+              </View>
+              <FlashMessage ref={(ref) => this.myLocalFlashMessage = ref} position="bottom" />
+            </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
+
 }
 
 const styles = StyleSheet.create({
-  activeButton: {
-    marginTop: 16,
-    height: 50,
-    width: "98%",
-    borderRadius: 25,
-    textAlign: "center",
+  input: {
+    width: '100%',
+    height: 40,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+  },
+  buttonText: {
     color: "white",
-    backgroundColor: "#0390fc",
-    textAlignVertical: "center",
+    textTransform: "none",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+     // Ensure text remains in lowercase
+  },
+  buttonContainer: {
+    marginTop: 20,
+    height: 50,
+    width: 150,
     alignSelf: "center",
+    marginVertical: 150,
+  },
+  activeButton: {
+    height: 50,
+    width: 150,
+    borderRadius: 15,
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1d6fb8",
+    height: 40,
+  },
+  buttonPressed: {
+    backgroundColor: "#1db8b4", // Change to desired color when pressed
   },
 });
 

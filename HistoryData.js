@@ -146,6 +146,7 @@ function HistoryData({ route, navigation }) {
                                         history?.data?.length ?
                                             (
                                                 <>
+                                                
                                                     {
                                                         history.data.map((element, index) => (
                                                             <View key={element.idDispositivo + index} style={[{ borderColor: '#1D6FB8', borderWidth: 2, padding: 4 }]}>

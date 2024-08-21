@@ -1,7 +1,9 @@
 import { escuelaIcons, homeIcons, hospitalIcons, officeIcons } from "../Ubicacion";
 
 export function findDeviceIcon(establecimiento, grupo) {
-    let iconName = '';
+    if (!establecimiento || !grupo) {
+        return hospitalIcons[0].icon;
+    }
     let filteredIcons = [];
     switch (establecimiento.toLowerCase()) {
         case 'casa':

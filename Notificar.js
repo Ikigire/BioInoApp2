@@ -116,15 +116,16 @@ const Notificar = () => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={[gStyles.container,{paddingBottom: 0}]}>
         <Text style={[gStyles.title]}>Información de la cuenta</Text>
-        <Text style={{ fontSize: 12, marginTop: 40, marginBottom: -20 }}>Nombre Usuario:</Text>
+        <Text style={{ fontSize: 15, marginTop: 40, marginBottom: -20 }}>Nombre:</Text>
         <TextInput
           style={gStyles.input}
           placeholder='Nombre de usuario'
           value={nombreUsuario}
           onChangeText={text => setnombreUsuario(text)}
         />
+        
         {/* <View style={styles.setFontSizeOne}>
         <Text style={styles.toggleText}>
           {isNotificationEnabled ? 'Habilitar\nNotificaciones' : 'Deshabilitar\nNotificaciones'}
@@ -149,10 +150,11 @@ const Notificar = () => {
           />
         </View>
       </View> */}
-      </View>
-      <TouchableOpacity style={[{ width: '100%' }]} disabled={nombreOriginal == nombreUsuario} onPress={handleGuardarCambios}>
+      <TouchableOpacity style={[{ width: '50%' },{paddingBottom: 200},{marginTop:20}]} disabled={nombreOriginal == nombreUsuario} onPress={handleGuardarCambios}>
         <Text style={[gStyles.button, styles.disabled(nombreOriginal == nombreUsuario)]}>Guardar cambios</Text>
       </TouchableOpacity>
+      </View>
+      
       <FlashMessage ref={ref => this.flashMessage = ref} position={'top'} />
     </>
   );

@@ -1,33 +1,36 @@
-import { Content_Type, baseUrl } from "../utils/constantes";
+import { Content_Type, baseUrl, prodUrl, headers } from "../utils/constantes";
 
-const dispUrl = `${baseUrl}/dispositivos`;
+const dispUrl = `${prodUrl}/dispositivo`;
 
 export function getDispositivoById(idDispositivo) {
     const url = `${dispUrl}/${idDispositivo}`;
     return fetch(url);
 }
 
-export function getDispositivosByEstablecimientoUsuario(establecimiento, idUsuario) {
-    const url = `${dispUrl}/estab/${establecimiento}/${idUsuario}`;
+export function getDispositivosUsuario(idUsuario) {
+    const url = `${dispUrl}/byusuario/${idUsuario}`;
     return fetch(url);
 }
 
-export function getDispositivosUsuario(idUsuario) {
-    const url = `${dispUrl}/usuario/${idUsuario}`;
-    return fetch(url);
+export function updateDispositivo(dispositivo) {
+    console.log(dispositivo);
+    const url = `${dispUrl}/${dispositivo.idDispositivo}`
+    return fetch(url, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(dispositivo)
+    });
 }
 
 export function createDispositivo(dispositivo) {
     return fetch(dispUrl, {
         method: 'post',
-        headers: {
-            "Content-Type": Content_Type
-        },
+        headers,
         body: JSON.stringify(dispositivo)
     });
 }
-
-export function deleteDispositivo(idDispositivo) {
-    const url = `${dispUrl}/${idDispositivo}`;
+export function deleteDispositivo(idDispositivo, idUsuario) {
+    const url = `${dispUrl}/removeRelation/${idDispositivo}/${idUsuario}`;
+    
     return fetch(url, {method: 'delete'})
 }

@@ -67,65 +67,6 @@ function Home({ navigation }) {
 
     const { updateEstList, setUpdateEstList } = useAppContext();
 
-    const getEstablecimientosData = (id) => {
-        getDistinctUsuarioEstablecimientos(id)
-            .then(async resp => {
-                if (resp.status != 200 && resp.status != 404) {
-                    const error = await resp.json();
-                    // console.log()
-                    throw new Error(error.message ?? '');
-                }
-
-                setEstablecimientos(await resp.json());
-            })
-            .catch(error => {
-                this.flashMessage.showMessage({
-                    message: error.message,
-                    type: 'danger',
-                    icon: 'danger',
-                    duration: 4000
-                })
-            });
-    }
-
-    const getDispositivosByEstab = (estab) => {
-        // console.log(estab, idUsuario);
-        getDispositivosByEstablecimientoUsuario(estab, idUsuario)
-            .then(async resp => {
-                // console.log(resp);
-                if (resp.status != 200) {
-                    // console.info('Previo al error')
-                    // console.log(resp.body)
-                    const error = await resp.json();
-                    // console.info('Previo al error')
-                    // console.error("Error en la petición de dispositivos: ", error);
-                    this.flashMessage.showMessage({
-                        message: `Algo Salio Mal: \n${error.errorType}\n${error.message}`,
-                        type: 'danger',
-                        icon: 'danger',
-                        duration: 4000
-                    })
-                    return;
-                }
-                // console.log(resp.body);
-                setDispositivos(await resp.json());
-            })
-            .catch(error => {
-                console.log(error);
-                this.flashMessage.showMessage({
-                    message: `Algo salió mal\n${error.message}\nmamahuevo :3`,
-                    type: 'danger',
-                    icon: 'danger',
-                    duration: 4000
-                })
-            })
-            .finally(() => {
-                setLoadingDevices(false);
-            });
-
-        getSectionDataFromDispositivos();
-    }
-
     const getDispositivosByUserId = (id) => {
         getDispositivosUsuario(id)
             .then(async resp => {
@@ -137,7 +78,7 @@ function Home({ navigation }) {
                     throw new Error(error.message ?? '');
                 }
                 const devices = await resp.json();
-                // console.log(devices);
+                console.log(devices);
                 setDispositivos(devices);
             })
             .catch(error => {
@@ -155,6 +96,8 @@ function Home({ navigation }) {
             .then((value) => {
                 // console.warn("Datos usuario", value)
                 const { idUsuario: id } = JSON.parse(value);
+                console.log('Usuario logeado', id);
+                
                 setIdUsuario(id);
                 getDispositivosByUserId(id);
             })
@@ -170,12 +113,26 @@ function Home({ navigation }) {
     }, []);
 
     useEffect(() => {
+        AsyncStorage.getItem(usuarioItemKey)
+          .then(value => {
+            console.log(value);
+            const { nombre } = JSON.parse(value);
+            setNombreUsuario(nombre);
+          })
+          .catch(error => {
+            console.log(error);
+            Alert.alert("Error", error.message, [], {
+              cancelable: true
+            });
+          });
+      }, [])
+    useEffect(() => {
         if (updateEstList) {
             getDispositivosByUserId(idUsuario);
             setUpdateEstList(false);
         }
     }, [updateEstList]);
-
+    const [nombreUsuario, setNombreUsuario] = useState("Jonh Doe");
     return (
         <>
             {
@@ -187,16 +144,16 @@ function Home({ navigation }) {
                         dispositivos.length > 0 ?
                             (
                                 <View style={{ flex: 1 }}>
-                                    <View style={{ width: '100%', padding: 12, backgroundColor: '#1D6FB8', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-                                        <MaterialCommunityIcons style={{ color: '#fff' }} name="toy-brick-plus-outline" size={30} onPress={() => navigation.navigate("Electric")} />
+                                    <View style={{ width: '100%', padding: 12, backgroundColor: '#fff', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',paddingTop: 35 }}>
+                                    <MaterialCommunityIcons style={{ color: '#1D6FB8', paddingTop: 10 }} name="archive-cog-outline" size={35} onPress={() => navigation.navigate("Electric")} />
                                     </View>
-                                    <View style={{ width: '100%', height: '92%', overflow: 'hidden' }}>
+                                    <View style={{ width: '100%', height: '92%', overflow: 'hidden', backgroundColor:'#fff' }}>
                                         <SectionList
-                                            style={{ marginVertical: 8 }}
+                                            style={{ marginVertical: 8, backgroundColor: '#fff' }}
                                             sections={getSectionDataFromDispositivos(dispositivos)}
                                             keyExtractor={(device, index) => `${device.grupo}-${index}`}
                                             renderSectionHeader={({ section: { title } }) => (
-                                                <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
+                                                <Text style={{ fontSize: 20, marginLeft: 22 }}>{title}</Text>
                                             )}
                                             renderItem={({ item }) => (
                                                 <SmallDeviceView device={item} navigation={navigation}/>
@@ -209,7 +166,7 @@ function Home({ navigation }) {
                             (
                                 <View style={gStyles.container}>
                                     <Text style={{ fontSize: 32, fontVariant: 'bold' }}>!Bienvenido¡</Text>
-                                    <Text style={{ fontSize: 20 }}>Tal parece que eres nuevo por aquí!</Text>
+                                    <Text style={{ fontSize: 20 }}>{nombreUsuario}</Text>
 
                                     <Pressable style={[{ margin: 15, width: '90%' }]}
                                         onPress={() => navigation.navigate("Electric")}

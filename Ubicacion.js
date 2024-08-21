@@ -1,9 +1,9 @@
 import { Component, useState } from "react";
-import { Button, Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { Button, Text, View, StyleSheet, ScrollView, Pressable, TouchableWithoutFeedback, Keyboard, TextInput } from "react-native";
+import FlashMessage from "react-native-flash-message";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 s = require("./Styles")
-
 
 export const homeIcons = [
   { icon: 'knife', grupo: 'Cocina', estab: 'Casa' },
@@ -32,7 +32,7 @@ export const hospitalIcons = [
   { icon: 'hospital', grupo: 'Urgencias', estab: 'Hospital' },
   { icon: 'baby-face', grupo: 'Incubadora', estab: 'Hospital' },
   { icon: 'coffee-maker', grupo: 'Comedor', estab: 'Hospital' },
-  { icon: 'hospital', grupo: 'Urgencias', estab: 'Hospital' },
+  { icon: 'ambulance', grupo: 'Ambulancia', estab: 'Hospital' },
   { icon: 'truck', grupo: 'Estacionamiento', estab: 'Hospital' },
   { icon: 'skull-outline', grupo: 'Rayos X', estab: 'Hospital' },
   { icon: 'seat', grupo: 'Sala de Espera', estab: 'Hospital' },
@@ -73,12 +73,14 @@ export const officeIcons = [
   { icon: 'folder-multiple', grupo: 'Archivo', estab: 'Oficina' }
 ]
 
-function Ubicacion(props) {
+function Ubicacion({navigation, route}) {
   let keyCounter = 0;
   const [selectedIcon, setSelectedIcon] = useState('');
   // const [selectedGrupo, setSelectedGrupo] = useState('');
   const [selectedEstab, setSelectedEstab] = useState('');
+  const [ubicacion, setUbicacion] = useState('');
 
+  const { dispositivo } = route.params;
 
   const changeSelectedIcon = ({ grupo, estab }) => {
     if (grupo == selectedIcon && estab == selectedEstab) {
@@ -92,8 +94,8 @@ function Ubicacion(props) {
 
   const conditionalStyles = StyleSheet.create({
     active: (valueIcon) => {
-      const bgColor = valueIcon == `${selectedIcon}-${selectedEstab}` ? '#0390fc' : 'transparent';
-      const txtColor = valueIcon == `${selectedIcon}-${selectedEstab}` ? 'white' : 'black';
+      const bgColor = valueIcon == `${selectedIcon}` ? '#1d6fb8' : 'transparent';
+      const txtColor = valueIcon == `${selectedIcon}` ? 'white' : 'black';
       const borderRadius = 10;
       // const borderRadius = valueIcon == this.selectedIcon ? 10 : 0;
       return {
@@ -104,7 +106,7 @@ function Ubicacion(props) {
       }
     },
     activeButton: (disabled) => {
-      const bgColor = !disabled ? '#0390fc' : 'gray';
+      const bgColor = !disabled ? '#1d6fb8' : 'gray';
       return {
         height: 50,
         width: '98%',
@@ -133,7 +135,7 @@ function Ubicacion(props) {
       if (!onPress) {
         onPress = () => {
           changeSelectedIcon({
-            grupo: text,
+            grupo: icon,
             estab
           });
 
@@ -149,7 +151,7 @@ function Ubicacion(props) {
       } else {
         return (
           <Pressable onPress={onPress} key={keyCounter++}>
-            <Text style={conditionalStyles.active(`${text}-${estab}`)}>
+            <Text style={conditionalStyles.active(`${icon}`)}>
               <MaterialCommunityIcons name={icon} size={icon_size} />{'\n' + text}
             </Text>
           </Pressable>
@@ -191,6 +193,15 @@ function Ubicacion(props) {
 
   return (
     <View style={{ width: '100%', height: '100%' }}>
+      <View style={{width: '95%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={s.title}>¿En donde está ubicado?</Text>
+        <TextInput style={[s.input]}
+          value={ubicacion}
+          onChangeText={(text) => { setUbicacion(text); }}
+        />
+      </View>
+      <Text style={[s.title, {textAlign: 'center'}]}>Selecciona un ícono</Text>
+      
       <ScrollView>
         <View style={s.imagesGrid}>
           <Text style={s.title}>{'Hogar \n'}</Text>
@@ -210,10 +221,13 @@ function Ubicacion(props) {
       <View style={{ paddingTop: 15, marginBottom: 5 }}>
         <Pressable onPress={() => {
           // alert(`El item seleccionado es: ${selectedIcon}\nEstab: ${selectedEstab}`);
-          props.navigation.navigate("Cnto", {grupo: selectedIcon, establecimiento: selectedEstab});
+          if (!selectedIcon || !ubicacion) {
+            return;
+          }
+          navigation.navigate("Nombre", { dispositivo: { ...dispositivo, ubicacion, icon: selectedIcon } });
         }}
           disabled={!selectedIcon}>
-          <Text style={conditionalStyles.activeButton(!selectedIcon)} >Aceptar</Text>
+          <Text style={conditionalStyles.activeButton(!selectedIcon || !ubicacion)} >Aceptar</Text>
         </Pressable>
       </View>
     </View>

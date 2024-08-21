@@ -1,8 +1,12 @@
 
 export const baseUrl = "http://3.19.28.164:3000";
-// export const baseUrl = "http://192.168.1.111:3000";
+export const prodUrl = "https://mon-cai-api.up.railway.app";
 
 export const Content_Type = 'application/json';
+
+export const headers = {
+    "Content-Type": Content_Type
+};
 
 export const usuarioItemKey = "usuario";
 

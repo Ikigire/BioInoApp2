@@ -1,6 +1,6 @@
-import { Content_Type, baseUrl } from "../utils/constantes";
+import { Content_Type, prodUrl } from "../utils/constantes";
 
-const usuariosBaseUrl = `${baseUrl}/usuarios`;
+const usuariosBaseUrl = `${prodUrl}/usuario`;
 
 export function getAllUsuarioWithEmail() {
     const url = `${usuariosBaseUrl}?fields=email`;

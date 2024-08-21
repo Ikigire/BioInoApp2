@@ -19,14 +19,14 @@ const estilos = StyleSheet.create({
     },
     infoCell: {
         width: '80%',
-        textAlign: 'auto',
-        fontSize: 16,
+        fontSize: 14,
         marginLeft: 2,
+        textAlign: 'center'
     },
     infoTitle: {
         width: '20%',
         textAlign: 'auto',
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center'
     },
@@ -53,7 +53,7 @@ const HumidityInfo = () => {
                 <Text style={[estilos.infoCell]}>Menor probabilidad de asentamiento de bacterias y humedad ideal</Text>
             </View>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorDanger]}>{'60+'}</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorDanger]}>{'+60'}</Text>
                 <Text style={[estilos.infoCell]}>Mayor probabilidad de asentamiento de bacterias</Text>
             </View>
         </View>

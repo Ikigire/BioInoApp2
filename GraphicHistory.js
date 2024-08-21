@@ -8,8 +8,11 @@ import { LineChart } from 'react-native-chart-kit';
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
+        backgroundColor: '#fff',
         padding: 16,
+    },
+    graphicContainer: {
+        marginTop: 35
     },
     dropdown: {
         height: 50,
@@ -23,12 +26,16 @@ const styles = StyleSheet.create({
     },
     label: {
         position: 'absolute',
-        backgroundColor: 'white',
+        backgroundColor: '#fff',
         left: 22,
         top: 8,
         zIndex: 999,
         paddingHorizontal: 8,
         fontSize: 14,
+    },
+    legend: {
+        position: 'relative'
+
     },
     placeholderStyle: {
         fontSize: 16,
@@ -48,20 +55,24 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: '800',
         textAlign: 'center'
+    },
+    separador: {
+        width: '100%',
+        height: 2,
+        backgroundColor: '#fff'
     }
 });
 
 const GraphicHistory = ({ route, navigation }) => {
     const { mac } = route.params;
 
-
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [period, setPeriod] = React.useState("");
     const [isFocus, setIsFocus] = React.useState(false);
 
-
     const periods = [
+
         { label: '24 horas', value: '24h' },
         { label: '1 semana', value: 'w' },
         { label: '2 semanas', value: '2w' },
@@ -92,17 +103,29 @@ const GraphicHistory = ({ route, navigation }) => {
             const tempMeanData = []
             const tempMinData = []
             const tempMaxData = []
-            // console.log(Object.keys(data));
+
             data.results.forEach(val => {
-                labels.push(`${val.name}`);
+                let periodoEnEspañol = '';
+
+                if (val.name.startsWith('day')) {
+                    const dn = val.name.slice(3); // Elimina 'day' del principio para obtener solo el número
+                    periodoEnEspañol = `${dn} Dia`;
+                } else if (val.name.startsWith('week')) {
+                    const sn = val.name.slice(4); // Elimina 'week' del principio para obtener solo el número
+                    periodoEnEspañol = `${sn} Semana`;
+                } else if (val.name.startsWith('month')) {
+                    const mn = val.name.slice(5); // Elimina 'month' del principio para obtener solo el número
+                    periodoEnEspañol = `${mn} Mes`;
+                }
+                else {
+                    periodoEnEspañol = val.name; // Si no es uno de los períodos esperados, mantén el valor original
+                }
+
+                labels.push(`${periodoEnEspañol}`);
                 tempMeanData.push(val.mean.temp);
                 tempMinData.push(val.min.temp);
                 tempMaxData.push(val.max.temp);
             });
-
-            console.log(labels);
-            console.log(tempMeanData);
-            // console.log(humiMeanData);
 
             return {
                 labels,
@@ -110,18 +133,18 @@ const GraphicHistory = ({ route, navigation }) => {
                 datasets: [
                     {
                         data: tempMeanData,
-                        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-                        strokeWidth: 2 // optional
+                        color: (opacity = 1) => `rgba(98, 0, 255, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
                     },
                     {
                         data: tempMinData,
-                        color: (opacity = 1) => `rgba(96, 133, 210, ${opacity})`, // optional
-                        strokeWidth: 2 // optional
+                        color: (opacity = 1) => `rgba(17, 241, 85, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
                     },
                     {
                         data: tempMaxData,
-                        color: (opacity = 1) => `rgba(236, 57, 84, ${opacity})`, // optional
-                        strokeWidth: 2 // optional
+                        color: (opacity = 1) => `rgba(255, 21, 33, ${opacity})`, // optional                
+                        strokeWidth: 4 // optional
                     }
                 ]
             }
@@ -135,17 +158,30 @@ const GraphicHistory = ({ route, navigation }) => {
             const humiMeanData = []
             const humiMinData = []
             const humiMaxData = []
-            // console.log(Object.keys(data));
-            data.results.forEach(val => {
-                labels.push(`${val.name} ago`);
-                humiMeanData.push(val.mean.humidity);
-                humiMinData.push(val.min.humidity);
-                humiMaxData.push(val.max.humidity);
-            });
 
-            console.log(labels);
-            console.log(humiMeanData);
-            // console.log(humiMeanData);
+            data.results.forEach(val => {
+                let periodoEnEspañol = '';
+
+
+                if (val.name.startsWith('day')) {
+                    const dn = val.name.slice(3); // Elimina 'day' del principio para obtener solo el número
+                    periodoEnEspañol = `${dn} Dia`;
+                } else if (val.name.startsWith('week')) {
+                    const sn = val.name.slice(4); // Elimina 'week' del principio para obtener solo el número
+                    periodoEnEspañol = `${sn} Semana`;
+                } else if (val.name.startsWith('month')) {
+                    const mn = val.name.slice(5); // Elimina 'month' del principio para obtener solo el número
+                    periodoEnEspañol = `${mn} Mes`;
+                }
+                else {
+                    periodoEnEspañol = val.name; // Si no es uno de los períodos esperados, mantén el valor original
+                }
+
+                labels.push(`${periodoEnEspañol}`);
+                humiMeanData.push(val.mean.temp);
+                humiMinData.push(val.min.temp);
+                humiMaxData.push(val.max.temp);
+            });
 
             return {
                 labels,
@@ -153,18 +189,128 @@ const GraphicHistory = ({ route, navigation }) => {
                 datasets: [
                     {
                         data: humiMeanData,
-                        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-                        strokeWidth: 2 // optional
+                        color: (opacity = 1) => `rgba(98, 0, 255, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
                     },
                     {
                         data: humiMinData,
-                        color: (opacity = 1) => `rgba(96, 133, 210, ${opacity})`, // optional
-                        strokeWidth: 2 // optional
+                        color: (opacity = 1) => `rgba(17, 241, 85, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
                     },
                     {
                         data: humiMaxData,
-                        color: (opacity = 1) => `rgba(236, 57, 84, ${opacity})`, // optional
-                        strokeWidth: 2 // optional
+                        color: (opacity = 1) => `rgba(255, 21, 33, ${opacity})`, // optional                strokeWidth: 4 // optional
+                    }
+                ]
+            }
+        }
+
+        return {};
+    }
+
+    const getCO2GraphicData = () => {
+        if (data) {
+            const labels = []
+            const co2MeanData = []
+            const co2MinData = []
+            const co2MaxData = []
+
+            data.results.forEach(val => {
+                let periodoEnEspañol = '';
+
+                if (val.name.startsWith('day')) {
+                    const dn = val.name.slice(3); // Elimina 'day' del principio para obtener solo el número
+                    periodoEnEspañol = `${dn} Dia`;
+                } else if (val.name.startsWith('week')) {
+                    const sn = val.name.slice(4); // Elimina 'week' del principio para obtener solo el número
+                    periodoEnEspañol = `${sn} Semana`;
+                } else if (val.name.startsWith('month')) {
+                    const mn = val.name.slice(5); // Elimina 'month' del principio para obtener solo el número
+                    periodoEnEspañol = `${mn} Mes`;
+                }
+                else {
+                    periodoEnEspañol = val.name; // Si no es uno de los períodos esperados, mantén el valor original
+                }
+
+                labels.push(`${periodoEnEspañol}`);
+                co2MeanData.push(val.mean.co2);
+                co2MinData.push(val.min.co2);
+                co2MaxData.push(val.max.co2);
+            });
+
+            return {
+                labels,
+                legend: ['Promedio', 'Mínimo', 'Máximo'],
+                datasets: [
+                    {
+                        data: co2MeanData,
+                        color: (opacity = 1) => `rgba(98, 0, 255, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
+                    },
+                    {
+                        data: co2MinData,
+                        color: (opacity = 1) => `rgba(17, 241, 85, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
+                    },
+                    {
+                        data: co2MaxData,
+                        color: (opacity = 1) => `rgba(255, 21, 33, ${opacity})`, // optional                
+                        strokeWidth: 4 // optional
+                    }
+                ]
+            }
+        }
+
+        return {};
+    }
+    const getVOCGraphicData = () => {
+        if (data) {
+            const labels = []
+            const vocMeanData = []
+            const vocMinData = []
+            const vocMaxData = []
+
+            data.results.forEach(val => {
+                let periodoEnEspañol = '';
+
+                if (val.name.startsWith('day')) {
+                    const dn = val.name.slice(3); // Elimina 'day' del principio para obtener solo el número
+                    periodoEnEspañol = `${dn} Dia`;
+                } else if (val.name.startsWith('week')) {
+                    const sn = val.name.slice(4); // Elimina 'week' del principio para obtener solo el número
+                    periodoEnEspañol = `${sn} Semana`;
+                } else if (val.name.startsWith('month')) {
+                    const mn = val.name.slice(5); // Elimina 'month' del principio para obtener solo el número
+                    periodoEnEspañol = `${mn} Mes`;
+                }
+                else {
+                    periodoEnEspañol = val.name; // Si no es uno de los períodos esperados, mantén el valor original
+                }
+
+                labels.push(`${periodoEnEspañol}`);
+                vocMeanData.push(val.mean.voc);
+                vocMinData.push(val.min.voc);
+                vocMaxData.push(val.max.voc);
+            });
+
+            return {
+                labels,
+                legend: ['Promedio', 'Mínimo', 'Máximo'],
+                datasets: [
+                    {
+                        data: vocMeanData,
+                        color: (opacity = 1) => `rgba(98, 0, 255, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
+                    },
+                    {
+                        data: vocMinData,
+                        color: (opacity = 1) => `rgba(17, 241, 85, ${opacity})`, // optional
+                        strokeWidth: 4 // optional
+                    },
+                    {
+                        data: vocMaxData,
+                        color: (opacity = 1) => `rgba(255, 21, 33, ${opacity})`, // optional                
+                        strokeWidth: 4 // optional
                     }
                 ]
             }
@@ -174,7 +320,7 @@ const GraphicHistory = ({ route, navigation }) => {
     }
 
     let graphicData = {
-        labels: ["January", "February", "March", "April", "May", "June"],
+        labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
         legend: ['Promedio', 'Mínimo', 'Máximo'],
         datasets: [
             {
@@ -186,8 +332,8 @@ const GraphicHistory = ({ route, navigation }) => {
                     Math.random() * 100,
                     Math.random() * 100
                 ],
-                color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-                strokeWidth: 2 // optional
+                color: (opacity = 1) => `rgba(98, 0, 255, ${opacity})`, // optional
+                strokeWidth: 4 // optional
             },
             {
                 data: [
@@ -198,8 +344,8 @@ const GraphicHistory = ({ route, navigation }) => {
                     Math.random() * 100,
                     Math.random() * 100
                 ],
-                color: (opacity = 1) => `rgba(236, 57, 84, ${opacity})`, // optional
-                strokeWidth: 2 // optional
+                color: (opacity = 1) => `rgba(17, 241, 85, ${opacity})`, // optional
+                strokeWidth: 4 // optional
             },
             {
                 data: [
@@ -210,14 +356,11 @@ const GraphicHistory = ({ route, navigation }) => {
                     Math.random() * 100,
                     Math.random() * 100
                 ],
-                color: (opacity = 1) => `rgba(96, 133, 210, ${opacity})`, // optional
-                strokeWidth: 2 // optional
+                color: (opacity = 1) => `rgba(255, 21, 33, ${opacity})`, // optional                strokeWidth: 4 // optional
             }
         ],
         // legend: ['Me la', 'Pelas'],
     };
-
-
     useEffect(() => {
         getDeviceGraphicHistoricalData(mac, period)
             .then(async resp => {
@@ -255,135 +398,195 @@ const GraphicHistory = ({ route, navigation }) => {
                 selectedTextStyle={styles.selectedTextStyle}
                 iconStyle={styles.iconStyle}
                 data={periods}
-
                 maxHeight={'95%'}
                 labelField="label"
                 valueField="value"
                 placeholder={!isFocus ? 'Periodo de tiempo' : '...'}
-                searchPlaceholder="Search..."
+                searchPlaceholder="Buscar..."
                 value={period}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
                 onChange={item => {
                     setPeriod(item.value);
                     setIsFocus(false);
-                    setLoading(true)
+                    setLoading(true);
                 }}
             />
-            <ScrollView style={[{ marginVertical: 5, paddingHorizontal: 10, height: 'calc' }]}>
-
+            <ScrollView style={{ marginVertical: 5, paddingHorizontal: 10 }}>
                 {
                     loading ?
-                        <>
-                            <ActivityIndicator size={'large'} />
-                        </>
+                        <ActivityIndicator size={'large'} />
                         :
-
                         period ?
-                            <>
-                                {
-                                    data ?
-                                        <>
-                                            {/* <ScrollView style={[{ marginTop: 5, paddingHorizontal: 10 }]}> */}
-                                            <View>
-                                                <Text style={[styles.titulo]}>Datos de Temperatura</Text>
-                                                <ScrollView horizontal>
-                                                    <LineChart
-                                                        data={getTemperatureGraphicData()}
-                                                        width={Dimensions.get("window").width * 3}
-                                                        height={220}
-                                                        yAxisLabel=""
-                                                        yAxisSuffix="°"
-                                                        chartConfig={{
-                                                            backgroundColor: "#1D6FB8",
-                                                            backgroundGradientFrom: "#1D6FB8",
-                                                            backgroundGradientTo: "#3620F7",
-                                                            // backgroundGradientTo: "#ffa726",
-                                                            decimalPlaces: 2, // optional, defaults to 2dp
-                                                            color: () => `rgba(255, 255, 255, ${1})`,
-                                                            labelColor: () => `rgba(255, 255, 255, ${1})`,
-                                                            scrollableDotStrokeColor: '#1D6FB8',
-                                                            useShadowColorFromDataset: true,
-                                                            style: {
-                                                                borderRadius: 16
-                                                            },
-                                                            propsForDots: {
-                                                                r: "6",
-                                                                strokeWidth: "2",
-                                                                stroke: "#ffa726"
-                                                            }
-                                                        }}
-                                                        bezier
-                                                        style={{
-                                                            marginVertical: 8,
-                                                            borderRadius: 16
-                                                        }}
-                                                    />
-
-                                                </ScrollView>
-                                                <Text>Temperatura media: {data.median.temp}°</Text>
-                                                <Text>Temperatura moda: {data.mode.temp}°</Text>
-                                                <Text>Temperatura promedio: {data.mean.temp}°</Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.titulo]}>Datos de Humedad</Text>
-                                                <ScrollView horizontal>
-                                                    <LineChart
-                                                        data={getHumidityGraphicData()}
-                                                        width={Dimensions.get("window").width * 3}
-                                                        height={220}
-                                                        yAxisLabel=""
-                                                        yAxisSuffix=""
-                                                        chartConfig={{
-                                                            backgroundColor: "#1D6FB8",
-                                                            backgroundGradientFrom: "#1D6FB8",
-                                                            backgroundGradientTo: "#3620F7",
-                                                            // backgroundGradientTo: "#ffa726",
-                                                            decimalPlaces: 2, // optional, defaults to 2dp
-                                                            color: () => `rgba(255, 255, 255, ${1})`,
-                                                            labelColor: () => `rgba(255, 255, 255, ${1})`,
-                                                            scrollableDotStrokeColor: '#1D6FB8',
-                                                            useShadowColorFromDataset: true,
-                                                            style: {
-                                                                borderRadius: 16
-                                                            },
-                                                            propsForDots: {
-                                                                r: "6",
-                                                                strokeWidth: "2",
-                                                                stroke: "#ffa726"
-                                                            }
-                                                        }}
-                                                        style={{
-                                                            marginVertical: 8,
-                                                            borderRadius: 16
-                                                        }}
-                                                    />
-                                                </ScrollView>
-                                                <Text>Humedad media: {data.median.humidity}</Text>
-                                                <Text>Humedad moda: {data.mode.humidity}</Text>
-                                                <Text>Humedad promedio: {data.mean.humidity}</Text>
-                                            </View>
-                                            {/* </ScrollView> */}
-                                        </>
-                                        :
-                                        <>
-                                            <Text style={[{ textAlign: 'center', width: '90%', marginTop: 35, fontSize: 20 }]}>
-                                                No se econtrarón datos, intente seleccionando otro periodo
-                                            </Text>
-                                        </>
-
-                                }
-                            </>
-                            :
-                            <>
-                                <Text style={[{ textAlign: 'center', width: '90%', marginTop: 35, fontSize: 20 }]}>
-                                    Seleccione un periodo para graficar
+                            data ?
+                                <>
+                                    
+                                    <View>
+                                        <Text style={styles.titulo}>Temperatura</Text>
+                                        <ScrollView horizontal>
+                                            <LineChart
+                                                data={getTemperatureGraphicData()}
+                                                width={Dimensions.get("window").width * 3}
+                                                height={220}
+                                                yAxisLabel=""
+                                                yAxisSuffix="°"
+                                                chartConfig={{
+                                                    backgroundColor: "#e8e8e8",
+                                                    backgroundGradientFrom: "#e8e8e8",
+                                                    backgroundGradientTo: "#e8e8e8",
+                                                    decimalPlaces: 2,
+                                                    color: () => `rgba(0, 0, 0, 1)`,
+                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                    scrollableDotStrokeColor: '#1D6FB8',
+                                                    useShadowColorFromDataset: true,
+                                                    style: {
+                                                        borderRadius: 16
+                                                    },
+                                                    propsForDots: {
+                                                        r: "6",
+                                                        strokeWidth: "2",
+                                                        stroke: "#ffa726"
+                                                    }
+                                                }}
+                                                bezier
+                                                style={{
+                                                    marginVertical: 8,
+                                                    borderRadius: 16
+                                                }}
+                                            />
+                                        </ScrollView>
+                                        <Text>Mediana: {data.median.temp}°C</Text>
+                                        <Text>Moda: {data.mode.temp}°C</Text>
+                                        <Text>Promedio: {data.mean.temp}°C</Text>
+                                    </View>
+                                    <View style={styles.graphicContainer}>
+                                        <View style={styles.separador}></View>
+                                        <Text style={styles.titulo}>Humedad</Text>
+                                        <ScrollView horizontal>
+                                            <LineChart
+                                                data={getHumidityGraphicData()}
+                                                width={Dimensions.get("window").width * 3}
+                                                height={220}
+                                                yAxisLabel=""
+                                                yAxisSuffix="%"
+                                                chartConfig={{
+                                                    backgroundColor: "#e8e8e8",
+                                                    backgroundGradientFrom: "#e8e8e8",
+                                                    backgroundGradientTo: "#e8e8e8",
+                                                    decimalPlaces: 2,
+                                                    color: () => `rgba(0, 0, 0, 1)`,
+                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                    scrollableDotStrokeColor: '#1D6FB8',
+                                                    useShadowColorFromDataset: true,
+                                                    style: {
+                                                        borderRadius: 16
+                                                    },
+                                                    propsForDots: {
+                                                        r: "6",
+                                                        strokeWidth: "2",
+                                                        stroke: "#ffa726"
+                                                    }
+                                                }}
+                                                style={{
+                                                    marginVertical: 8,
+                                                    borderRadius: 16
+                                                }}
+                                            />
+                                        </ScrollView>
+                                        <Text>Mediana: {data.median.humidity}%</Text>
+                                        <Text>Moda: {data.mode.humidity}%</Text>
+                                        <Text>Promedio: {data.mean.humidity}%</Text>
+                                    </View>
+                                    <View style={styles.graphicContainer}>
+                                        <View style={styles.separador}></View>
+                                        <Text style={styles.titulo}>CO2</Text>
+                                        <ScrollView horizontal>
+                                            <LineChart
+                                                data={getCO2GraphicData()}
+                                                width={Dimensions.get("window").width * 3}
+                                                height={220}
+                                                yAxisLabel=""
+                                                yAxisSuffix=" PPM"
+                                                chartConfig={{
+                                                    backgroundColor: "#e8e8e8",
+                                                    backgroundGradientFrom: "#e8e8e8",
+                                                    backgroundGradientTo: "#e8e8e8",
+                                                    decimalPlaces: 2,
+                                                    color: () => `rgba(0, 0, 0, 1)`,
+                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                    scrollableDotStrokeColor: '#1D6FB8',
+                                                    useShadowColorFromDataset: true,
+                                                    style: {
+                                                        borderRadius: 16
+                                                    },
+                                                    propsForDots: {
+                                                        r: "6",
+                                                        strokeWidth: "2",
+                                                        stroke: "#ffa726"
+                                                    }
+                                                }}
+                                                style={{
+                                                    marginVertical: 8,
+                                                    borderRadius: 16
+                                                }}
+                                            />
+                                        </ScrollView>
+                                        <Text>Mediana: {data.median.co2} PPM</Text>
+                                        <Text>Moda: {data.mode.co2} PPM</Text>
+                                        <Text>Promedio: {data.mean.co2} PPM</Text>
+                                    </View>
+                                    <View style={styles.graphicContainer}>
+                                        <View style={styles.separador}></View>
+                                        <Text style={styles.titulo}>VOC</Text>
+                                        <ScrollView horizontal>
+                                            <LineChart
+                                                data={getVOCGraphicData()}
+                                                width={Dimensions.get("window").width * 3}
+                                                height={220}
+                                                yAxisLabel=""
+                                                yAxisSuffix=" PPB"
+                                                chartConfig={{
+                                                    backgroundColor: "#e8e8e8",
+                                                    backgroundGradientFrom: "#e8e8e8",
+                                                    backgroundGradientTo: "#e8e8e8",
+                                                    decimalPlaces: 2,
+                                                    color: () => `rgba(0, 0, 0, 1)`,
+                                                    labelColor: () => `rgba(0, 0, 0, 1)`,
+                                                    scrollableDotStrokeColor: '#1D6FB8',
+                                                    useShadowColorFromDataset: true,
+                                                    style: {
+                                                        borderRadius: 16
+                                                    },
+                                                    propsForDots: {
+                                                        r: "6",
+                                                        strokeWidth: "2",
+                                                        stroke: "#ffa726"
+                                                    }
+                                                }}
+                                                style={{
+                                                    marginVertical: 8,
+                                                    borderRadius: 16
+                                                }}
+                                            />
+                                        </ScrollView>
+                                        <Text>Mediana: {data.median.voc} PPB</Text>
+                                        <Text>Moda: {data.mode.voc} PPB</Text>
+                                        <Text>Promedio: {data.mean.voc} PPB</Text>
+                                    </View>
+                                </>
+                                :
+                                <Text style={{ textAlign: 'center', width: '90%', marginTop: 35, fontSize: 20 }}>
+                                    No se encontraron datos, intente seleccionando otro periodo.
                                 </Text>
-                            </>
+                            :
+                            <Text style={{ textAlign: 'center', width: '90%', marginTop: 35, fontSize: 20 }}>
+                                Seleccione un periodo para graficar.
+                            </Text>
                 }
             </ScrollView>
         </View>
-    )
+    );
 }
+
 
 export default GraphicHistory

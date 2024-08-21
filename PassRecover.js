@@ -7,7 +7,7 @@ import { updateUsuario } from "./services/usuario.service";
 
 const conditionalStyles = StyleSheet.create({
     activeButton: (disabled) => {
-        const bgColor = !disabled ? '#0390fc' : 'gray';
+        const bgColor = !disabled ? '#1D6FB8' : 'gray';
         return {
             height: 50,
             width: '35%',
@@ -71,12 +71,12 @@ const PassRecover = ({ route, navigation }) => {
             });
     }
     return (
-        <View style={{ width: '100%', height: '100%' }}>
+        <View style={{ width: '100%', height: '100%',  backgroundColor: '#fff' }}>
             <View style={[gStyles.centerContent]}>
                 <Text style={[gStyles.title]}>Recuperar contraseña</Text>
 
                 <TextInput
-                    style={gStyles.input}
+                    style={styles.input}
                     placeholder='Nueva contraseña (letras y números)'
                     autoCapitalize="none"
                     secureTextEntry={true}
@@ -84,7 +84,7 @@ const PassRecover = ({ route, navigation }) => {
                     onChangeText={text => setPassword(text)}
                 />
                 <TextInput
-                    style={gStyles.input}
+                    style={styles.input}
                     placeholder='Confirmar nueva contraseña'
                     autoCapitalize="none"
                     secureTextEntry={true}
@@ -94,18 +94,38 @@ const PassRecover = ({ route, navigation }) => {
 
             </View>
             <View style={{ marginBottom: 5 }}>
-                <Pressable onPress={handleButtonPress} disabled={false}>
+                <Pressable onPress={handleButtonPress} disabled={false} style={backgroundColor = '#1D6FB8'}>
                     <Text style={conditionalStyles.activeButton(false)} >Aceptar</Text>
                 </Pressable>
             </View>
 
 
-            <View style={{ minHeight: 50, width: '100%', backgroundColor: '#0390fc' }}>
-            </View>
+           
 
             <FlashMessage ref={flashMessage} position={"top"} />
         </View>
     );
 }
-
+const styles = StyleSheet.create({
+    input: {
+      width: '100%', // Ajusta el ancho según tus preferencias
+      height: 40,
+      paddingHorizontal: 10,
+      marginBottom: 20, // Incrementa este valor para aumentar la separación
+      borderWidth: 1,
+      borderColor: 'gray', // Cambia el color del borde según tus preferencias
+      borderRadius: 8, // Ajusta este valor para hacer las esquinas más cuadradas
+    },
+    activeButton: {
+      marginTop: 16,
+      height: 50,
+      width: "98%",
+      borderRadius: 25,
+      textAlign: "center",
+      color: "white",
+      backgroundColor: "#1d6fb8",
+      textAlignVertical: "center",
+      alignSelf: "center",
+    },
+  });
 export default PassRecover;

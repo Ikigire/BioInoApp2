@@ -64,19 +64,22 @@ function Realtime({ navigation }) {
     }
 
     return (
-        <View>
+        <View style={{ backgroundColor: '#fff', paddingBottom: 0 }}>
             {
                 isFocused && dispositivos.length > 0 ?
                     <>
+                        <View style={{ width: '100%', padding: 12, backgroundColor: '#fff', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', paddingTop: 35 }}>
+                            <MaterialCommunityIcons style={{ color: '#1D6FB8', paddingTop: 10 }} name="archive-cog-outline" size={35} onPress={() => navigation.navigate("Electric")} />
+                        </View>
                         <SectionList
-                            style={{ marginVertical: 8 }}
+                            style={{ marginVertical: 8, backgroundColor: '#fff', height: '86%' }}
                             sections={getSectionDataFromDispositivos(dispositivos)}
                             keyExtractor={(device, index) => `${device.grupo}-${index}`}
                             renderSectionHeader={({ section: { title } }) => (
-                                <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
+                                <Text style={{ fontSize: 20, marginLeft: 22 }}>{title}</Text>
                             )}
                             renderItem={({ item }) => (
-                                <Device device={item} navigation={navigation}/>
+                                <Device device={item} navigation={navigation} />
                                 // <Text>{item.nombreDispositivo}</Text>
                             )}
                         />

@@ -8,6 +8,13 @@ module.exports = StyleSheet.create({
         justifyContent: 'center',
         width: '100%'
     },
+    containercc:{
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'right',
+        justifyContent: 'center',
+        width: '100%'
+    },
     grid: (maxColumns = 4) => ({
         flex: maxColumns, // the number of columns you want to devide the screen into
         marginHorizontal: "auto",
@@ -73,14 +80,26 @@ module.exports = StyleSheet.create({
         backgroundColor: '#f5f2f2',
         shadowColor: '#cfcfcf'
     },
+    input2: {
+        marginTop: 25,
+        marginBottom:50,
+        width: '100%',
+        minHeight: 45,
+        textAlign: 'center',
+        borderWidth: 3,
+        borderColor: '#cfcfcf',
+        borderRadius: 17,
+        backgroundColor: '#f5f2f2',
+        shadowColor: '#cfcfcf'
+    },
     card: {
         width: '95%',
         marginHorizontal: 10,
         marginTop: 5,
         paddingVertical: 10,
         backgroundColor: '#1D6FB8',
-        borderRadius: 25,
-        borderWidth: 3,
+        borderRadius: 20,
+        borderWidth: 5,
         color: '#fff',
         borderColor: '#1D6FB8',
 
@@ -90,18 +109,19 @@ module.exports = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         textAlignVertical: 'center',
-        fontSize: 26,
-        marginVertical: 6
+        fontSize: 20,
+        marginVertical: 0
     },
     card_subtitle: {
         color: '#fff',
         textAlign: 'center',
         textAlignVertical: 'center',
-        fontSize: 16,
+        fontSize: 14,
         marginVertical: 6
     },
     card_text: {
-        color: '#fff'
+        color: '#fff',
+        fontSize: 14
     },
     card_img: {
         height: '75%',
@@ -126,29 +146,18 @@ module.exports = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: 16
     },
-    activeButton: (disabled) => {
-        const bgColor = !disabled ? '#0390fc' : 'gray';
-        return {
-            height: 50,
-            width: '100%',
-            borderRadius: 25,
-            textAlign: 'center',
-            color: 'white',
-            backgroundColor: bgColor,
-            verticalAlign: 'middle',
-            alignSelf: 'center'
-        }
-    },
+    
     button: {
 
         height: 50,
         width: '100%',
-        borderRadius: 25,
+        borderRadius: 15 ,
         textAlign: 'center',
-        color: 'white',
+        color: '1d6fb8',
         backgroundColor: '#0390fc',
         verticalAlign: 'middle',
         alignSelf: 'center'
 
-    }
+    },
+    
 });

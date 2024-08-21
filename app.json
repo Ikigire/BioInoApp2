@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "bioinocuom",
-    "slug": "bioinocuom",
-    "version": "1.0.0",
+    "name": "MonCAI",
+    "slug": "MonCAI",
+    "version": "1.0.9",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo_OP2_2.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo_OP2_2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,16 +15,40 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+      "supportsTablet": true,
+      "name": "MonCAI",
+      "slug": "MonCAI",
+      "foregroundImage": "./assets/logo_OP2_2.png",
+      "backgroundColor": "#ffffff",
+      "icon": "./assets/logo_OP2_2.png",
+      "splash": {
+        "image": "./assets/logo_OP2_2.png",
+        "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       }
     },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo_OP2_2.png",
+        "backgroundColor": "#ffffff",
+        "name": "MonCAI",
+        "slug": "MonCAI",
+        "icon": "./assets/logo_OP2_2.png",
+        "splash": {
+          "image": "./assets/logo_OP2_2.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      },
+      "package": "com.gabriel_117.MonCAI"
+    },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo_OP2_2.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "26668881-781f-4d08-89ba-a736e40ec732"
+      }
     }
   }
 }

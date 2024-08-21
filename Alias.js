@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { TextInput, StyleSheet, Text, View, Pressable, ActivityIndicator } from "react-native";
+import { TextInput, StyleSheet, Text, View, Pressable, ActivityIndicator,TouchableWithoutFeedback,Keyboard } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import { baseUrl, usuarioItemKey } from "./utils/constantes";
 import { createEstablecimiento, deleteEstablecimiento } from "./services/establecimiento.service";
 import { Modal } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createGrupo, deleteGrupo } from "./services/grupo.service";
-import { createDispositivo } from "./services/dispositivo.service";
+import { createDispositivo, updateDispositivo } from "./services/dispositivo.service";
 import { useAppContext } from "./utils/app-context";
 
 const s = require("./Styles")
@@ -66,8 +66,9 @@ function Alias({ navigation, route }) {
 
     const handleClick = async () => {
         setUnable(true);
-        const nombreDispositivo = nombDispositivo.trim();
-        console.log(`'${nombreDispositivo}'`);
+        const alias = nombDispositivo.trim();
+        console.log(`'${alias}'`);
+
         if (disabled) {
             this.flashMessage.showMessage({
                 message: 'Hace Falta el nombre de dispositivo',
@@ -80,74 +81,45 @@ function Alias({ navigation, route }) {
 
         setShowModal(true);
 
-        const { dispositivo, establecimiento, grupo } = route.params;
+        const { dispositivo } = route.params;
+        dispositivo.alias = alias;
         const usuario = await AsyncStorage.getItem(usuarioItemKey);
 
         const { idUsuario } = JSON.parse(usuario);
 
+        const device = { ...dispositivo, idUsuario };
 
-        let estab = { establecimiento, idUsuario };
-        let group = { grupo };
-        let device = {nombreDispositivo, ...dispositivo};
-
-        console.log(device, estab, group, idUsuario);
-
-
-
-        // setTimeout(() => {
-        //     setShowModal(false);
-        // }, 3000);
-
-        createEstablecimiento(estab)
-            .then(async (resp) => {
-                if (resp.status != 200) {
-                    const error = await resp.json();
-                    throw new Error(error.message)
-                }
-                estab = (await resp.json()).establecimiento;
-                return createGrupo(group);
-            })
-            .then(async (resp) => {
-                if (resp.status != 200) {
-                    const error = await resp.json();
-                    throw new Error(error.message)
-                }
-                group = await resp.json();
-                device.idGrupo = group.idGrupo;
-                device.idEstab = estab.idEstab;
-                return createDispositivo(device);
-            })
-            .then(async (resp) => {
-                if (resp.status != 200) {
-                    const error = await resp.json();
-                    throw new Error(error.message)
-                }
-                setUpdateEstList(true);
-                navigation.navigate("Tabs");
-            })
-            .catch( async (error) => {
-                setUnable(false);
-                setShowModal(false);
-                if ( estab.idEstab ?? false) {
-                    await deleteEstablecimiento(estab.idEstab);
-                }
-
-                if ( group.idGrupo ?? false ){
-                    await deleteGrupo(group.idGrupo);
-                }
+        
+        // return;
+        updateDispositivo({...device, idUsuario})
+        .then(async resp => {
+            if (resp.status !== 200){
+                const { message } = await resp.json();
                 this.flashMessage.showMessage({
-                    message: error.message,
+                    message: message,
                     type: 'danger',
-                    icon: 'danger',
-                    duration: 4000
-                })
+                    icon: 'danger'
+                });
+
+                return;
+            }
+
+            await this.flashMessage.showMessage({
+                message: `Dispositivo ${dispositivo.idDispositivo}`,
+                type: 'success',
+                icon: 'success'
             });
-
+            setUpdateEstList(true);
+            navigation.navigate('Tabs');
+        })
+        .catch(error => {
+            this.flashMessage.showMessage({
+                message: error.message,
+                type: 'danger',
+                icon: 'danger'
+            })
+        });
     }
-
-    // useEffect(() => {
-    //     console.log(route.params);
-    // }, [])
 
     useEffect(() => {
         setDisabled(!(nombDispositivo.trim().length > 0));
@@ -170,6 +142,7 @@ function Alias({ navigation, route }) {
     })
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.centeredView}>
             <Text>Dale un nombre a tu dispositivo</Text>
             <TextInput style={s.input}
@@ -197,6 +170,7 @@ function Alias({ navigation, route }) {
                 </View>
             </Modal>
         </View>
+        </TouchableWithoutFeedback>
     );
 }
 

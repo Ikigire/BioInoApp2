@@ -1,23 +1,21 @@
 import React from 'react'
-import { Pressable, Text, View, Image } from 'react-native'
+import { Pressable, Text, View, Image, ScrollView } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import s from './../Styles'
 import { findDeviceIcon } from '../utils/icon.utils'
 import SensorInfo from './SensorInfo'
-// const s = require("../Styles")
 
-
-const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, navigate = true, connect = true, destination = 'Mqtt'}) => {
+const Device = ({ device, navigation, showSensorInfo = false, interval = 8000, navigate = true, connect = true, destination = 'Mqtt'}) => {
     if (!device) {
         return (
             <Text style={{ width: '100%', height: 80, fontSize: 14, textAlign: 'center' }}>
-                No se recibío información de dispositivo
+                No se recibió información de dispositivo
             </Text>
         );
     }
 
     const navigateTo = () => {
-        if ( !navigate ) {
+        if (!navigate) {
             return;
         }
         
@@ -37,32 +35,31 @@ const Device = ({ device, navigation, showSensorInfo = false, interval = 5000, n
             default:
                 break;
         }
-
     };
-        const icon = findDeviceIcon(device.establecimiento, device.grupo);
+
+    const icon = findDeviceIcon(device.establecimiento, device.grupo);
+
     return (
-        <Pressable style={s.card} onPress={navigateTo}>
-            <Text style={s.card_title}> {device.nombreDispositivo} </Text>
-            <Text style={s.card_subtitle}> {device.idDispositivo} </Text>
-            <View style={{display: 'flex', width: '100%', marginBottom:8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
-                <MaterialCommunityIcons name={icon} size={50} color={'#fff'} />
-                <View>
-                    <Text style={[s.card_text, {textAlign: 'center'}]}> Ubicación: </Text>
-                    <Text style={[s.card_text, {textAlign: 'center'}]}> {`${device.establecimiento} - ${device.grupo}`} </Text>
-                    <Text style={[s.card_text, {textAlign: 'center'}]}> Modelo: </Text>
-                    <Text style={[s.card_text, {textAlign: 'center'}]}> {device.modelo} </Text>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Pressable style={s.card} onPress={navigateTo}>
+                <Text style={s.card_title}> {device.alias} </Text>
+                <Text style={s.card_subtitle}> {device.idDispositivo} </Text>
+                <View style={{ display: 'flex', width: '100%', marginBottom: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                    <MaterialCommunityIcons name={device.icon} size={50} color={'#fff'} />
+                    <View>
+                        <Text style={[s.card_text, { textAlign: 'center' }]}> Ubicación: </Text>
+                        <Text style={[s.card_text, { textAlign: 'center' }]}> {`${device.ubicacion}`} </Text>
+                        <Text style={[s.card_text, { textAlign: 'center' }]}> Modelo: </Text>
+                        <Text style={[s.card_text, { textAlign: 'center' }]}> {device.modelo} </Text>
+                    </View>
                 </View>
-            </View>
-            {
-                connect ? 
-                (
-                    <SensorInfo mac={device.idDispositivo} showSensorInfo={showSensorInfo} intervalTime={interval}/>
-                )
-                :
-                <></>
-            }
-        </Pressable>
-    )
+                {connect ? 
+                    (<SensorInfo mac={device.idDispositivo} sensores={device.sensores} showSensorInfo={showSensorInfo} intervalTime={interval} />)
+                    : <></>
+                }
+            </Pressable>
+        </ScrollView>
+    );
 }
 
 export default Device

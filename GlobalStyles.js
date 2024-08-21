@@ -70,7 +70,7 @@ export const gStyles = StyleSheet.create({
         textAlign: 'center',
         borderWidth: 3,
         borderColor: '#cfcfcf',
-        borderRadius: 17,
+        borderRadius: 8,
         backgroundColor: '#f5f2f2',
         shadowColor: '#cfcfcf'
     },
@@ -98,11 +98,12 @@ export const gStyles = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         textAlignVertical: 'center',
-        fontSize: 16,
+        fontSize: 14,
         marginVertical: 6
     },
     card_text: {
-        color: '#fff'
+        color: '#fff',
+        fontSize:14
     },
     card_img: {
         height: '75%',
@@ -127,27 +128,15 @@ export const gStyles = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: 16
     },
-    activeButton: (disabled) => {
-        const bgColor = !disabled ? '#0390fc' : 'gray';
-        return {
-            height: 50,
-            width: '100%',
-            borderRadius: 25,
-            textAlign: 'center',
-            color: 'white',
-            backgroundColor: bgColor,
-            verticalAlign: 'middle',
-            alignSelf: 'center'
-        }
-    },
+
     button: {
 
         height: 50,
         width: '100%',
-        borderRadius: 25,
+        borderRadius: 15,
         textAlign: 'center',
         color: 'white',
-        backgroundColor: '#0390fc',
+        backgroundColor: '#1d6fb8',
         verticalAlign: 'middle',
         alignSelf: 'center'
 

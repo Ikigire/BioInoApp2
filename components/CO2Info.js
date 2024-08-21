@@ -19,7 +19,7 @@ const estilos = StyleSheet.create({
     },
     infoCell: {
         width: '80%',
-        textAlign: 'center',
+        textAlign: 'auto',
         fontSize: 14,
         marginLeft: 2,
     },
@@ -39,38 +39,39 @@ const estilos = StyleSheet.create({
     textColorSuccess: {
         color: '#5cb85c'
     },
-    textColorInfo: {
-        color: '#5bc0de'
+    textColorSuccess500: {
+        color: '#388038'
     },
-    textColorPrimary: {
-        color: '#0275d8'
+    textColorSuccess800: {
+        color: '#193919'
     },
+
 })
-const TemperatureInfo = () => {
+const CO2Info = () => {
     return (
         <View style={[estilos.container]}>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorInfo]}>{'<8'}</Text>
-                <Text style={[estilos.infoCell]}>Muy Frio</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorSuccess800]}>{'400 - 699'}</Text>
+                <Text style={[estilos.infoCell]}>Ambiente Excelente</Text>
             </View>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorPrimary]}>{'8 - 15'}</Text>
-                <Text style={[estilos.infoCell]}>Frio</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorSuccess500]}>{'700 - 899'}</Text>
+                <Text style={[estilos.infoCell]}>Ambiente Bueno</Text>
             </View>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorSuccess]}>{'16 - 30'}</Text>
-                <Text style={[estilos.infoCell]}>Ideal</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorSuccess]}>{'900 - 1099'}</Text>
+                <Text style={[estilos.infoCell]}>Ambiente Normal</Text>
             </View>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorWarning]}>{'31 - 40'}</Text>
-                <Text style={[estilos.infoCell]}>Caliente</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorWarning]}>{'1100 - 1599'}</Text>
+                <Text style={[estilos.infoCell]}>Ambiente Contaminado</Text>
             </View>
             <View style={[estilos.infoRow]}>
-                <Text style={[estilos.infoTitle, estilos.textColorDanger]}>{'40+'}</Text>
-                <Text style={[estilos.infoCell]}>Muy Caliente</Text>
+                <Text style={[estilos.infoTitle, estilos.textColorDanger]}>{'> 1600'}</Text>
+                <Text style={[estilos.infoCell]}>Ambiente Altamente Contaminado</Text>
             </View>
         </View>
     )
 }
 
-export default TemperatureInfo
+export default CO2Info

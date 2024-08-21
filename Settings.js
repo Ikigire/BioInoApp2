@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usuarioItemKey } from './utils/constantes';
 import { gStyles } from './GlobalStyles';
+
 s = require("./Styles");
 
 const styles = StyleSheet.create({
@@ -13,15 +14,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
+  containercc: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'right',
+    justifyContent: 'center',
+    width: '100%'
+  },
   header: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 24,
     marginBottom: 20,
   },
   subTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontSize: 17,
+    marginBottom: 0,
   },
   text: {
     fontSize: 16,
@@ -30,11 +36,28 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   roundedButton: {
-    color: '#fff',
     backgroundColor: '#1D6FB8',
-    borderRadius: 100,
+    borderRadius: 25,
     borderColor: '#1d6fb8',
-    borderWidth: 3
+    borderWidth: 6,
+    marginBottom: 20,
+    alignSelf: 'auto',
+    paddingEnd: 40,
+    paddingStart: 40,
+    marginEnd: 65,
+    marginStart: 65,
+  },
+  logoutbutton: {
+    backgroundColor: '#de2a2f',
+    borderRadius: 25,
+    borderColor: '#de2a2f',
+    borderWidth: 6,
+    marginBottom: 20,
+    alignSelf: 'auto',
+    paddingEnd: 45,
+    paddingStart: 40,
+    marginEnd: 65,
+    marginStart: 65,
   }
 });
 
@@ -74,48 +97,33 @@ function Settings({ navigation }) {
   }, [])
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={[{marginBottom: 35}, { display: 'flex', alignItems: 'center'}]} onPress={handlePressHeader}>
-        <Text style={[styles.header, {textAlign: 'center'}]}>{nombreUsuario}</Text>
-        <View style={[{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderWidth: 2, padding: 5, borderRadius: 15, borderColor: '#0000EE' }]}>
-          <MaterialCommunityIcons name="logout" size={25} color={'#0000EE'} />
-          <Text style={[gStyles.link]}>
-            Cerrar sesión
-          </Text>
-          {/* <MaterialCommunityIcons name="arrow-left" size={25} color={'#474747'} /> */}
-        </View>
-      </TouchableOpacity>
 
-      <Row>
-        <Col numRows={4}>
-          <Text style={styles.subTitle}>Mi Cuenta</Text>
-        </Col>
-        <Col numRows={1}>
-          <TouchableOpacity style={[styles.roundedButton, styles.iconButton]} onPress={() => navigation.navigate("Notif")}>
-            <MaterialCommunityIcons name="arrow-right" size={25} color={'#fff'} />
-          </TouchableOpacity>
-        </Col>
-      </Row>
-      <Row>
-        <Col numRows={4}>
-          <Text style={styles.subTitle}>Términos de Uso</Text>
-        </Col>
-        <Col numRows={1}>
-          <TouchableOpacity style={[styles.roundedButton, styles.iconButton]} onPress={() => navigation.navigate("Term")}>
-            <MaterialCommunityIcons name="arrow-right" size={25} color={'#fff'} />
-          </TouchableOpacity>
-        </Col>
-      </Row>
-      <Row>
-        <Col numRows={4}>
-          <Text style={styles.subTitle}>Política de Privacidad</Text>
-        </Col>
-        <Col numRows={1}>
-          <TouchableOpacity style={[styles.roundedButton, styles.iconButton]} onPress={() => navigation.navigate("Poli")}>
-            <MaterialCommunityIcons name="arrow-right" size={25} color={'#fff'} />
-          </TouchableOpacity>
-        </Col>
-      </Row>
+    <View style={{ backgroundColor: '#fff', paddingBottom: 250 }}>
+      <View style={{ width: '100%', padding: 12, backgroundColor: '#fff', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 70, paddingTop: 35 }}>
+        <MaterialCommunityIcons style={{ color: '#1D6FB8', paddingTop: 10 }} name="archive-cog-outline" size={35} onPress={() => navigation.navigate("Electric")} />
+      </View>
+
+      <Text style={[styles.header, { textAlign: 'center' }, { paddingBottom: 70, backgroundColor: '#fff' }]}>{nombreUsuario}</Text>
+      <View style={{paddingBottom:10}}>
+        <TouchableOpacity style={[styles.roundedButton]} onPress={() => navigation.navigate("Notif")}>
+          <Text style={[styles.subTitle, { color: '#fff' }]}>Mi cuenta</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{paddingBottom:10}}>
+      <TouchableOpacity style={[styles.roundedButton]} onPress={() => navigation.navigate("Term")}>
+        <Text style={[styles.subTitle, { color: '#fff' }]}>Términos de uso</Text>
+      </TouchableOpacity>
+      </View>
+      <View style={{paddingBottom:10}}>
+      <TouchableOpacity style={[styles.roundedButton]} onPress={() => navigation.navigate("Poli")}>
+        <Text style={[styles.subTitle, { color: '#fff' }]}>Política de privacidad</Text>
+      </TouchableOpacity>
+      </View>
+      <View style={{paddingBottom:10}}>
+      <TouchableOpacity style={[styles.logoutbutton]} onPress={() => navigation.navigate("Login")}>
+        <Text style={[styles.subTitle, { color: '#fff' }]}>Cerrar sesión</Text>
+      </TouchableOpacity>
+      </View>
     </View>
   );
 }

@@ -1,63 +1,88 @@
 import React, { Component } from "react";
-import {Text, View, StyleSheet, Pressable, TextInput } from "react-native";
+import { Text, View, StyleSheet, Pressable, TextInput, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Image } from "react-native";
 import FlashMessage, { showMessage } from "react-native-flash-message";
-
-import { baseUrl, usuarioItemKey } from "./utils/constantes";
+import { baseUrl, prodUrl, usuarioItemKey, headers } from "./utils/constantes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { MaterialIcons } from '@expo/vector-icons';
 
 globalStyle = require("./Styles")
-
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 50,
+    },
+    imageContainer: {
+        marginBottom: 60,
+    },
+    image: {
+        width: 200,
+        height: 150,
+        resizeMode: 'contain',
+    },
+    input: {
+        width: 290,
+        height: 40,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        marginBottom: 20,
+    },
+    input2: {
+        width: 290,
+        height: 40,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        marginBottom: 20,
+        marginStart: 43,
+        fontSize: 14,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    eyeIcon: {
+        marginLeft: 10,
+        marginBottom: 20
+    },
+    button: {
+        backgroundColor: '#1d6fb8',
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginVertical: 10,
+    },
+    buttonText: {
+        color: 'white',
+        textAlign: 'center',
+        textTransform: 'none', // Asegura que el texto no se transforme a mayúsculas en Android
+    },
+    buttonDisabled: {
+        backgroundColor: '#cccccc',
+    },
+});
 
 class Login extends Component {
     constructor() {
         super();
-        this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
         this.state = {
             email: "",
             password: "",
             validEmail: false,
             emailTouched: false,
             validPass: false,
-            passTouched: false
+            passTouched: false,
+            showPassword: false,
         }
     }
-
-    forceUpdateHandler() {
-        this.forceUpdate();
-    }
-
-    conditionalStyles = StyleSheet.create({
-        active: (valueIcon) => {
-            const bgColor = valueIcon == this.selectedIcon ? '#0390fc' : 'transparent';
-            const txtColor = valueIcon == this.selectedIcon ? 'white' : 'black';
-            const borderRadius = 10;
-            // const borderRadius = valueIcon == this.selectedIcon ? 10 : 0;
-            return {
-                backgroundColor: bgColor,
-                color: txtColor,
-                borderRadius: borderRadius,
-                textAlign: 'center'
-            }
-        },
-        activeButton: (disabled) => {
-            const bgColor = !disabled ? '#0390fc' : 'gray';
-            return {
-                height: 50,
-                width: '35%',
-                borderRadius: 25,
-                textAlign: 'center',
-                color: 'white',
-                backgroundColor: bgColor,
-                verticalAlign: 'middle',
-                alignSelf: 'center'
-            }
-        }
-    })
 
     handlerLogin = async () => {
-        const { validEmail, validPass, emailTouched, passTouched, ...loginInfo } = this.state;
-        
+        const { validEmail, validPass, emailTouched, passTouched, showPassword, ...loginInfo } = this.state;
+
         if (!validEmail || !emailTouched) {
             showMessage({
                 message: "Ingrese un correo válido",
@@ -68,35 +93,28 @@ class Login extends Component {
         }
         if (!validPass || !passTouched) {
             showMessage({
-                message: "La contraseña debe contener por lo menos 3 caracteres",
+                message: "La contraseña debe contener por lo menos 6 caracteres",
                 type: "danger",
                 duration: 2000
             });
             return;
         }
 
-        const url = `${baseUrl}/usuarios/login`;
-        // console.log(url);
+        const url = `${prodUrl}/usuario/login`;
         fetch(url, {
             method: 'post',
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
             body: JSON.stringify(loginInfo)
         })
-            .then(resp => resp.json())
+            .then(resp => {
+                return resp.json()
+            })
             .then(async (data) => {
-                if (data.errorType ?? false) {
-                    throw new Error(`${data.errorType}\n${data.message}`);
+                if (data.error ?? false) {
+                    throw new Error(`${data.error}\n${data.message}`);
                 }
-                // S.setItem("usuario", JSON.stringify(data));
-                // await EncryptedStorage.setItem("usuario", JSON.stringify(data))
-                // console.info(await EncryptedStorage.getItem("usuario"));
 
                 await AsyncStorage.setItem(usuarioItemKey, JSON.stringify(data));
-
-                // console.info("Usuario: ", await AsyncStorage.getItem("usuario"));
-
                 this.props.navigation.navigate("Tabs");
             })
             .catch(error => {
@@ -112,87 +130,104 @@ class Login extends Component {
         const { text } = nativeEvent;
         this.setState({ email: text });
         const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,}$/;
+        this.setState({ validEmail: emailRegex.test(text) });
+    }
 
-        this.setState({ validEmail: emailRegex.test(this.state.email) });
+    handleBlurEmail = () => {
+        const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,}$/;
+        const isValidEmail = emailRegex.test(this.state.email);
+        this.setState({ validEmail: isValidEmail });
     }
 
     validatePassword = (text) => {
         this.setState({ password: text });
-
-        this.setState({ validPass: this.state.password.length > 3 })
+        this.setState({ validPass: text.length >= 6 });
     }
 
+    toggleShowPassword = () => {
+        this.setState(prevState => ({ showPassword: !prevState.showPassword }));
+    };
 
     render() {
+        const { validEmail, validPass } = this.state;
+
         return (
-            <View style={{ width: '100%', height: '100%' }}>
-                <View style={[globalStyle.centerContent]}>
-                    <Text style={[globalStyle.title]}>Iniciar Sesión</Text>
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null}>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                        <View style={{ width: '100%', height: '100%', backgroundColor: '#fff' }}>
 
-                    <TextInput
-                        onSubmitEditing={() => this.passInput.focus()}
-                        returnKeyType="next"
-                        blurOnSubmit={false}
-                        style={globalStyle.input}
-                        placeholder='Correo'
-                        autoComplete="email"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        // onTextInput={this.prueba}
-                        value={this.state.email}
-                        // onChangeText={this.validateEmail}
-                        onChange={this.validateEmail}
-                        onFocus={() => this.setState({ emailTouched: true })}
-                    />
-                    {
-                        // this.state.emailTouched && !this.state.validEmail ?
-                        //     <View style={globalStyle.input_error_message_container}>
-                        //         <Text style={globalStyle.input_error_message}>Ingrese un correo de usuario valido</Text>
-                        //     </View> :
-                        //     <></>
-                    }
-                    <TextInput
-                        ref={(input) => this.passInput = input}
-                        style={globalStyle.input}
-                        returnKeyType="done"
-                        onSubmitEditing={this.handlerLogin}
-                        placeholder='Contraseña (letras y números)'
-                        autoCapitalize="none"
-                        secureTextEntry={true}
-                        value={this.state.password}
-                        onChangeText={this.validatePassword}
-                        onFocus={() => this.setState({ passTouched: true })}
-                    />
-                    {
-                        // this.state.passTouched && !this.state.validPass ?
-                        //     <View style={globalStyle.input_error_message_container}>
-                        //         <Text style={globalStyle.input_error_message}>La contraseña debe contener por lo menos 3 caracteres</Text>
-                        //     </View> :
-                        //     <></>
-                    }
-                </View>
+                            <View style={[globalStyle.centerContent]}>
+                                <View style={{ width: 200, height: 200, justifyContent: 'center', alignItems: 'center', marginBottom: 30, marginTop: 10 }}>
+                                    <Image
+                                        source={require('./assets/logo_OP2_2.png')}
+                                        style={{ flex: 1, width: 200, height: 150, resizeMode: 'contain' }}
+                                    />
+                                </View>
 
-                <View style={{ paddingTop: 15, marginBottom: 5 }}>
-                    <Pressable onPress={this.handlerLogin} disabled={false}>
-                        <Text style={this.conditionalStyles.activeButton((!this.state.validEmail || !this.state.validPass))} >Iniciar sesión</Text>
-                    </Pressable>
-                </View>
+                                <Text style={{ textAlign: 'left', fontSize: 15, paddingEnd: 230 }}>Usuario</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    onSubmitEditing={() => this.passInput.focus()}
+                                    returnKeyType="next"
+                                    blurOnSubmit={false}
+                                    placeholder='usuario@mail.com'
+                                    autoCompleteType="email"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    value={this.state.email}
+                                    onChange={this.validateEmail}
+                                    onBlur={this.handleBlurEmail}
+                                    onFocus={() => this.setState({ emailTouched: true })}
+                                />
+                                <Text style={{ textAlign: 'left', fontSize: 15, paddingEnd: 205 }}>Contraseña</Text>
+                                <View style={styles.passwordContainer}>
+                                    <TextInput
+                                        style={[styles.input2, { marginRight: 0 }]}
+                                        ref={(input2) => this.passInput = input2}
+                                        returnKeyType="done"
+                                        onSubmitEditing={this.handlerLogin}
+                                        placeholder='contraseña'
+                                        autoCapitalize="none"
+                                        secureTextEntry={!this.state.showPassword}
+                                        value={this.state.password}
+                                        onChangeText={this.validatePassword}
+                                        onFocus={() => this.setState({ passTouched: true })}
+                                    />
+                                    <Pressable onPress={this.toggleShowPassword} style={styles.eyeIcon}>
+                                        <MaterialIcons name={this.state.showPassword ? "visibility" : "visibility-off"} size={30} color="black" />
+                                    </Pressable>
+                                </View>
+                            </View>
 
-                <View style={globalStyle.centerContent}>
-                    <Text style={[globalStyle.title, { paddingBottom: 25 }]}> ¿No tienes cuenta?</Text>
-                    <Pressable onPress={() => this.props.navigation.navigate("Signin")} >
-                        <Text style={[{color: '#0000EE' }]}>Registrate aquí</Text>
-                    </Pressable>
-                    <Pressable onPress={() => this.props.navigation.navigate("RecoverEmail")} style={{ marginTop: 15 }} >
-                        <Text style={globalStyle.title} >¿Olvisate tu contraseña?</Text>
-                        <Text style={[{color: '#0000EE' }]}>Recupera el acceso a tu cuenta aquí</Text>
-                    </Pressable>
-                </View>
+                            <View style={{ marginHorizontal: 50, paddingHorizontal: 70, borderRadius: 15 }}>
+                                <Pressable
+                                    style={({ pressed }) => [
+                                        styles.button,
+                                        pressed && { backgroundColor: '#1d6fb8' },
+                                        (!validEmail || !validPass) && styles.buttonDisabled,
+                                    ]}
+                                    onPress={this.handlerLogin}
+                                    disabled={!validEmail || !validPass}
+                                >
+                                    <Text style={styles.buttonText}>Iniciar sesión</Text>
+                                </Pressable>
+                            </View>
 
-                <View style={{ minHeight: 50, width: '100%', backgroundColor: '#0390fc' }}>
-                </View>
-                <FlashMessage ref={(flashMessage) => this.flashMessage = flashMessage} position={'bottom'} animated />
-            </View>
+                            <View style={globalStyle.centerContent}>
+                                <Pressable onPress={() => this.props.navigation.navigate("Signin")}>
+                                    <Text style={{ fontSize: 15, color: '#1d6fb8' }}>Registrarme</Text>
+                                </Pressable>
+                                <Pressable onPress={() => this.props.navigation.navigate("RecoverEmail")} style={{ marginTop: 15 }}>
+                                    <Text style={{ fontSize: 15, color: '#1d6fb8' }}>Olvidé mi contraseña</Text>
+                                </Pressable>
+                            </View>
+
+                            <FlashMessage ref={(flashMessage) => this.flashMessage = flashMessage} position={'bottom'} animated />
+                        </View>
+                    </TouchableWithoutFeedback>
+                </ScrollView>
+            </KeyboardAvoidingView>
         );
     }
 }

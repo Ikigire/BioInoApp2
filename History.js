@@ -1,4 +1,4 @@
-import { Button, View, Text, Image, FlatList, ActivityIndicator, SectionList } from 'react-native';
+import { Button, View, Text, Image, FlatList, ActivityIndicator, SectionList, ScrollView } from 'react-native';
 import styles from './Styles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useEffect, useState } from 'react';
@@ -58,21 +58,24 @@ function History({ navigation }) {
     }, [updateEstList]);
 
     return (
-        <View>
+        <View style={{backgroundColor: '#fff'}}>
             {
                 dispositivos.length > 0 ?
                     <>
-                        <SectionList 
-                            style={{ marginVertical: 8  }}
+                        <View style={{ width: '100%', padding: 12, backgroundColor: '#fff', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',paddingTop: 35 }}>
+                                    <MaterialCommunityIcons style={{ color: '#1D6FB8', paddingTop: 10 }} name="archive-cog-outline" size={35} onPress={() => navigation.navigate("Electric")} />
+                                    </View>
+                        <SectionList
+                            style={{ marginVertical: 8, backgroundColor: '#fff', height: '86%' }}
                             sections={getSectionDataFromDispositivos(dispositivos)}
                             keyExtractor={(device, index) => `${device.grupo}-${index}`}
                             renderSectionHeader={({ section: { title } }) => (
-                                <Text style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 22 }}>{title}</Text>
+                                <Text style={{ fontSize: 20, marginLeft: 22 }}>{title}</Text>
                             )}
                             renderItem={({ item }) => (
                                 // <Device device={item} navigation={navigation} connect={false} destination='Histo' />
                                 <Device device={item} navigation={navigation} connect={false} destination='graphics' />
-                                
+
                                 // <SmallDeviceView device={item} />
                                 // <Text>{item.nombreDispositivo}</Text>
                             )}
